@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'Login.dart';
-import 'SecondRoute.dart';
-import 'TabBarAnimation.dart';
+import 'pages/Login.dart';
+import 'pages/SecondRoute.dart';
+import 'pages/TabBarAnimation.dart';
 
 void main() => runApp(MaterialApp(home: BottomNavBar()));
 
@@ -46,23 +46,6 @@ class _BottomNavBarState extends State<BottomNavBar>{
   }
 }
 
-Card _cardFactory(int value, String txt) {
-  return Card(
-    color: Colors.lightBlueAccent[value],
-    margin: const EdgeInsets.all(32.0),
-    child: Container(
-      margin: const EdgeInsets.all(30.0),
-      padding: EdgeInsets.all(10.0),
-      child: Column(
-        children: <Widget>[
-          Center(
-            child: Text("$txt"),
-          ),
-        ],
-      ),
-    ),
-  );
-}
 
 /*
 class MyHomePage extends StatelessWidget {

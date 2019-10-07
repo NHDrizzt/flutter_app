@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "879027829531",
+    "firebase_url": "https://trabbiblioteca.firebaseio.com",
+    "project_id": "trabbiblioteca",
+    "storage_bucket": "trabbiblioteca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879027829531:android:2bc4401d5a933cdfb831be",
+        "android_client_info": {
+          "package_name": "com.example.flutter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "879027829531-cf2s2bo53kfv34faeujq4q7scbia78sj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXRywo8paVhbxt1agoTHN9uCK9ozFL_ss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "879027829531-cf2s2bo53kfv34faeujq4q7scbia78sj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
