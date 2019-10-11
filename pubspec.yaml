@@ -37,22 +37,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-  assets:
-    - images/s.jpg
-    - images/aaaa.PNG
-    - images/GridViewImgs/img2.jpg
-    - images/GridViewImgs/img3.jpg
-    - images/GridViewImgs/img4.jpg
-    - images/GridViewImgs/img5.jpg
-    - images/GridViewImgs/img6.jpg
-    - images/GridViewImgs/img7.jpg
-    - images/GridViewImgs/img8.jpg
-    - images/GridViewImgs/img9.jpg
-    - images/GridViewImgs/img10.jpg
-    - images/GridViewImgs/img11.jpg
-    - images/GridViewImgs/img12.jpg
-    - images/GridViewImgs/img13.jpg
-
+ # assets:
 
 
   # The following line ensures that the Material Icons font is
