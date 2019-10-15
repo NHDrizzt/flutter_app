@@ -12,7 +12,7 @@ class SecondRoute extends StatelessWidget {
           title: Center(
             child: Text("Otaku Library"),
           )),
-      body: gridViewFromFirebase(),
+      body: gridViewFromFirebase(context),
     );
   }
 }
