@@ -1,11 +1,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'Model/Anime.dart';
 import 'pages/Login.dart';
 import 'pages/SecondRoute.dart';
 import 'pages/TabBarAnimation.dart';
 import 'pages/Library/Andetails.dart';
+
 
 void main() => runApp(MaterialApp(
   home: BottomNavBar(),
@@ -13,7 +13,7 @@ void main() => runApp(MaterialApp(
       '/Inicial' : (context) => TabBarAnimation(),
       '/Library' : (context) => SecondRoute(),
       '/Login' : (context) => LoginPage(),
-      '/Details' : (context) => detailsAnime() ,
+      '/Details' : (context) => detailsAnime()
     } ,
     ));
 
