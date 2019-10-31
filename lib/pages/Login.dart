@@ -1,36 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/_routing/routes.dart';
+import 'package:flutter_app/pages/Perfil.dart';
 import 'package:flutter_app/pages/Register.dart';
 import 'package:flutter_app/pages/TrocaSenha.dart';
+import 'dart:math';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
 
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  _LoginPageState createState() {
+    return _LoginPageState();
+  }
 }
 
-class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin{
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   bool selected = false;
   double padValue = 100;
   double opacidade = 0.0;
   AnimationController _controller;
+  List<Bubble> bubbles;
+  final int numberOfBubbles = 400;
+  final Color color = Colors.orange;
+  final double maxBubbleSize = 12.0;
 
   _updatePadding(double value) => setState(() => padValue = value);
+
   void _changeOpacity() {
     setState(() => opacidade = opacidade == 0 ? 1.0 : 0.0);
   }
 
   void initState() {
     super.initState();
+
     setState(() {
       selected = !selected;
-
     });
+    bubbles = List();
+    int i = numberOfBubbles;
+    while (i > 0) {
+      bubbles.add(Bubble(color, maxBubbleSize));
+      i--;
+    }
 
     _controller = new AnimationController(
         duration: const Duration(seconds: 2000), vsync: this);
     _controller.addListener(() {
+      updateBubblePosition();
       _updatePadding(0);
       _changeOpacity();
     });
@@ -49,7 +65,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       tag: 'hero',
       child: Container(
         padding: EdgeInsets.only(top: 10),
-        child: Column(
+        child: Stack(
           children: <Widget>[
             CircleAvatar(
               backgroundColor: Colors.transparent,
@@ -92,7 +108,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               padding: EdgeInsets.all(padValue),
               duration: const Duration(milliseconds: 1500),
               curve: Curves.easeInOut,
-
             ),
           ],
         ),
@@ -131,7 +146,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           borderRadius: BorderRadius.circular(24),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed(loginViewRoute);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Perfil()));
         },
         padding: EdgeInsets.all(12),
         color: Colors.orangeAccent[900],
@@ -142,7 +157,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     final forgotPassword = Padding(
       padding: EdgeInsets.only(top: 50.0),
       child: InkWell(
-        onTap: (){
+        onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => TrocaSenha()),
@@ -204,24 +219,112 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             Colors.orangeAccent,
           ]),
         ),
-        child: Center(
-          child: ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.only(left: 24.0, right: 24.0),
-            children: <Widget>[
-              logo,
-              SizedBox(height: 35.0),
-              email,
-              SizedBox(height: 8.0),
-              password,
-              SizedBox(height: 24.0),
-              loginButton,
-              newUser,
-              forgotPassword
-            ],
-          ),
+        child: Stack(
+          children: [
+            CustomPaint(
+              //This is Animation as shown in previous video
+              foregroundPainter:
+              BubblePainter(bubbles: bubbles, controller: _controller),
+              size: Size(MediaQuery.of(context).size.width,
+                  MediaQuery.of(context).size.height),
+            ),
+            Center(
+              child: ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.only(left: 24.0, right: 24.0),
+                children: <Widget>[
+                  logo,
+                  SizedBox(height: 35.0),
+                  email,
+                  SizedBox(height: 8.0),
+                  password,
+                  SizedBox(height: 24.0),
+                  loginButton,
+                  newUser,
+                  forgotPassword
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  void updateBubblePosition() {
+    bubbles.forEach((it) => it.updatePosition());
+    setState(() {});
+  }
+}
+
+class BubblePainter extends CustomPainter {
+  List<Bubble> bubbles;
+  AnimationController controller;
+
+  BubblePainter({this.bubbles, this.controller});
+
+  @override
+  void paint(Canvas canvas, Size canvasSize) {
+    bubbles.forEach((it) => it.draw(canvas, canvasSize));
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class Bubble {
+  Color colour;
+  double direction;
+  double speed;
+  double radius;
+  double x;
+  double y;
+
+  Bubble(Color colour, double maxBubbleSize) {
+    this.colour = colour.withOpacity(Random().nextDouble());
+    this.direction = Random().nextDouble() * 360;
+    this.speed = 1;
+    this.radius = Random().nextDouble() * maxBubbleSize;
+  }
+
+  draw(Canvas canvas, Size canvasSize) {
+    Paint paint = new Paint()
+      ..color = colour
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.fill;
+
+    assignRandomPositionIfUninitialized(canvasSize);
+
+    randomlyChangeDirectionIfEdgeReached(canvasSize);
+
+    canvas.drawCircle(Offset(x, y), radius, paint);
+  }
+
+  void assignRandomPositionIfUninitialized(Size canvasSize) {
+    if (x == null) {
+      this.x = Random().nextDouble() * canvasSize.width;
+    }
+
+    if (y == null) {
+      this.y = Random().nextDouble() * canvasSize.height;
+    }
+  }
+
+  updatePosition() {
+    var a = 180 - (direction + 90);
+    direction > 0 && direction < 180
+        ? x += speed * sin(direction) / sin(speed)
+        : x -= speed * sin(direction) / sin(speed);
+    direction > 90 && direction < 270
+        ? y += speed * sin(a) / sin(speed)
+        : y -= speed * sin(a) / sin(speed);
+  }
+
+  randomlyChangeDirectionIfEdgeReached(Size canvasSize) {
+    if (x > canvasSize.width || x < 0 || y > canvasSize.height || y < 0) {
+      direction = Random().nextDouble() * 360;
+    }
   }
 }

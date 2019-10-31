@@ -27,7 +27,9 @@ dependencies:
   cupertino_icons: ^0.1.2
   curved_navigation_bar: ^0.3.1
   sqflite: ^1.1.7+1
-  path_provider:
+  path_provider: any
+  firebase_auth: any
+
 
 dev_dependencies:
   flutter_test:
