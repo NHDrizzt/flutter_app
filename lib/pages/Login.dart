@@ -1,8 +1,13 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/Perfil.dart';
 import 'package:flutter_app/pages/Register.dart';
 import 'package:flutter_app/pages/TrocaSenha.dart';
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
+
+final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -114,7 +119,29 @@ class _LoginPageState extends State<LoginPage>
       ),
     );
 
+    String _email, _password;
+    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+    Future<String> signIn() async {
+      final formState = _formkey.currentState;
+      if (formState.validate()) {
+        formState.save();
+        //TODO login FIREBASE
+
+        AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
+            email: _email, password: _password);
+        FirebaseUser user = result.user;
+        Navigator.pushNamed(context, '/Library');
+      }
+    }
+
     final email = TextFormField(
+      onSaved: (input) => _email = input,
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Por favor, digite o email! ';
+        }
+      },
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       initialValue: 'nezuko@gmail.com',
@@ -126,6 +153,12 @@ class _LoginPageState extends State<LoginPage>
     );
 
     final password = TextFormField(
+      onSaved: (input) => _password = input,
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Por favor, digite a senha! ';
+        }
+      },
       style: TextStyle(
         color: Colors.white,
       ),
@@ -145,9 +178,7 @@ class _LoginPageState extends State<LoginPage>
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => Perfil()));
-        },
+        onPressed: signIn,
         padding: EdgeInsets.all(12),
         color: Colors.orangeAccent[900],
         child: Text('Log In', style: TextStyle(color: Colors.black)),
@@ -224,11 +255,13 @@ class _LoginPageState extends State<LoginPage>
             CustomPaint(
               //This is Animation as shown in previous video
               foregroundPainter:
-              BubblePainter(bubbles: bubbles, controller: _controller),
+                  BubblePainter(bubbles: bubbles, controller: _controller),
               size: Size(MediaQuery.of(context).size.width,
                   MediaQuery.of(context).size.height),
             ),
             Center(
+                child: Form(
+              key: _formkey,
               child: ListView(
                 shrinkWrap: true,
                 padding: EdgeInsets.only(left: 24.0, right: 24.0),
@@ -244,7 +277,7 @@ class _LoginPageState extends State<LoginPage>
                   forgotPassword
                 ],
               ),
-            ),
+            )),
           ],
         ),
       ),
