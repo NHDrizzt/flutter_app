@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/DAO/UsuarioDAO.dart';
 import 'package:flutter_app/Model/colors.dart';
 import 'package:line_icons/line_icons.dart';
+
+TextEditingController _nameCtrl = new TextEditingController();
+TextEditingController _passwordCtrl = new TextEditingController();
+TextEditingController _nicknameCtrl = new TextEditingController();
+TextEditingController _emailCtrl = new TextEditingController();
 
 class RegisterPage extends StatefulWidget {
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
+
+final GlobalKey<FormState> _formkeyReg = GlobalKey<FormState>();
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
@@ -19,6 +27,22 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    void _reg() async {
+      final formState = _formkeyReg.currentState;
+      //Valida se todos os campos do Form não retornaram erro
+      if (formState.validate()) {
+        formState.save();
+        if (await FirebaseUs().create(_emailCtrl.text, _passwordCtrl.text) !=
+            null) {
+          _showDialog(context, "Email cadastrado! ",
+              " Cadastrado com sucesso! ^u^", true);
+        } else {
+          _showDialog(context, "Email já cadastrado",
+              "Esta conta de email já está cadastrada, seu chupinga", false);
+        }
+      }
+    }
+
     final appBar = Padding(
       padding: EdgeInsets.only(bottom: 40.0),
       child: Row(
@@ -53,16 +77,16 @@ class _RegisterPageState extends State<RegisterPage> {
     final registerForm = Padding(
       padding: EdgeInsets.only(top: 30.0),
       child: Form(
-        key: _formKey,
+        key: _formkeyReg,
         child: Column(
           children: <Widget>[
-            _buildFormField('Nome', LineIcons.user),
+            _buildFormField('Nome', LineIcons.user, _nameCtrl),
             formFieldSpacing,
-            _buildFormField('Nickname', LineIcons.user_plus),
+            _buildFormField('Nickname', LineIcons.user_plus, _nicknameCtrl),
             formFieldSpacing,
-            _buildFormField('Email ', LineIcons.envelope),
+            _buildFormField('Email ', LineIcons.envelope, _emailCtrl),
             formFieldSpacing,
-            _buildFormField('Senha', LineIcons.lock),
+            _buildFormField('Senha', LineIcons.lock, _passwordCtrl),
             formFieldSpacing,
           ],
         ),
@@ -111,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
           elevation: 10.0,
           shadowColor: Colors.white70,
           child: MaterialButton(
-            onPressed: () {},
+            onPressed: _reg,
             child: Text(
               'Criar Conta',
               style: TextStyle(
@@ -151,8 +175,15 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _buildFormField(String label, IconData icon) {
+  Widget _buildFormField(
+      String label, IconData icon, TextEditingController ctr) {
     return TextFormField(
+      controller: ctr,
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Por favor, digite a(o) $label! ';
+        }
+      },
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(color: Colors.black),
@@ -172,4 +203,35 @@ class _RegisterPageState extends State<RegisterPage> {
       cursorColor: Colors.black,
     );
   }
+}
+
+_showDialog(
+    BuildContext context, String titulo, String conteudo, bool success) {
+  final _dig = AlertDialog(
+      title: new Text(titulo),
+      content: new Text(conteudo),
+      actions: <Widget>[
+        // define os botões na base do dialogo
+        new FlatButton(
+          child: new Text("Fechar"),
+          onPressed: () {
+            if (success) {
+              Navigator.popAndPushNamed(context, '/Library');
+            } else {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              _nameCtrl.clear();
+              _nicknameCtrl.clear();
+              _passwordCtrl.clear();
+              _emailCtrl.clear();
+            }
+          },
+        ),
+      ]);
+
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return _dig;
+      });
 }

@@ -126,8 +126,7 @@ class _LoginPageState extends State<LoginPage>
       final formState = _formkey.currentState;
       if (formState.validate()) {
         formState.save();
-        //TODO login FIREBASE
-
+        //Login FIREBASE
         AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
             email: _email, password: _password);
         FirebaseUser user = result.user;
