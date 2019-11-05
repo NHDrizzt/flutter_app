@@ -1,11 +1,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'Model/Anime.dart';
+import 'package:flutter_app/pages/Perfil.dart';
+import 'package:flutter_app/pages/authentication.dart';
+import 'package:flutter_app/pages/root_page.dart';
 import 'pages/Login.dart';
 import 'pages/SecondRoute.dart';
 import 'pages/TabBarAnimation.dart';
 import 'pages/Library/Andetails.dart';
+
 
 void main() => runApp(MaterialApp(
   home: BottomNavBar(),
@@ -13,7 +16,7 @@ void main() => runApp(MaterialApp(
       '/Inicial' : (context) => TabBarAnimation(),
       '/Library' : (context) => SecondRoute(),
       '/Login' : (context) => LoginPage(),
-      '/Details' : (context) => detailsAnime() ,
+      '/Details' : (context) => detailsAnime()
     } ,
     ));
 
@@ -26,9 +29,9 @@ class _BottomNavBarState extends State<BottomNavBar>{
   int _page = 0;
 
   final _pageOption = [
-    TabBarAnimation(),
-    SecondRoute(),
     LoginPage(),
+    SecondRoute(),
+    //new RootPage(auth: new Auth()),
   ];
 
   @override
@@ -37,7 +40,6 @@ class _BottomNavBarState extends State<BottomNavBar>{
       bottomNavigationBar: CurvedNavigationBar(
         items: <Widget>[
           Icon(Icons.add, size: 30),
-          Icon(Icons.list, size: 30),
           Icon(Icons.compare_arrows, size: 30),
         ],
         color: Colors.orange,
@@ -55,67 +57,3 @@ class _BottomNavBarState extends State<BottomNavBar>{
     );
   }
 }
-
-
-/*
-class MyHomePage extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      drawer: Drawer(),
-      appBar: AppBar(
-        title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children:<Widget>[
-              Text('Boora HORA DO SHOW PORRA'),
-            ]
-        ),
-      ),
-      resizeToAvoidBottomPadding: false,
-      body: ListView(
-        children: <Widget>[
-          Center(
-            child: Column(
-              children: <Widget>[
-                Card(
-                  child: new InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => TabBarAnimation()),
-                      );
-                    },
-                    child: ListTile(
-                      leading: Icon(Icons.thumb_up),
-                      title: Center(
-                          child: Text('Clique aqui para calcular seu Ip de rede')),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          _cardFactory(5, 'Veja mais'),
-          _cardFactory(5, 'Klassique'),
-          _cardFactory(5, 'Uhum'),
-          _cardFactory(5, 'Já sabe né'),
-        ],
-      ),
-
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.blueAccent,
-        items: <Widget>[
-          Icon(Icons.add, size: 30),
-          Icon(Icons.list, size: 30),
-          Icon(Icons.compare_arrows, size: 30),
-        ],
-        onTap: (index) {
-          //Handle button tap
-        },
-      ),
-
-    );
-  }
-}
-*/
