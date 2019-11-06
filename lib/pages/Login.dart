@@ -140,11 +140,11 @@ class _LoginPageState extends State<LoginPage>
             _showLoginResponse(
                 'Não Cadastrado :(', 'Email não cadastrado, cadastre-se!');
             break;
+          default:
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/Perfil', (Route<dynamic> route) => false);
+            break;
         }
-
-        /*   Navigator.pushNamedAndRemoveUntil(
-            context, '/Library', (Route<dynamic> route) => false);
-         */
       }
     }
 
@@ -170,6 +170,9 @@ class _LoginPageState extends State<LoginPage>
       validator: (value) {
         if (value.isEmpty) {
           return 'Por favor, digite a senha! ';
+        }
+        if (value.length < 6) {
+          return 'Ao menos 6 dígitos! ';
         }
       },
       style: TextStyle(

@@ -17,6 +17,7 @@ void main() => runApp(MaterialApp(
         '/Login': (context) => LoginPage(),
         '/Details': (context) => detailsAnime(),
         '/Register': (context) => RegisterPage(),
+        '/Perfil': (context) => Perfil(),
       },
     ));
 
