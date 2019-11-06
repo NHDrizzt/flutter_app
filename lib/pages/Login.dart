@@ -1,11 +1,12 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_app/DAO/UsuarioDAO.dart';
 import 'package:flutter_app/pages/Perfil.dart';
 import 'package:flutter_app/pages/Register.dart';
 import 'package:flutter_app/pages/TrocaSenha.dart';
 import 'dart:math';
-import 'package:firebase_auth/firebase_auth.dart';
 
 final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -120,17 +121,30 @@ class _LoginPageState extends State<LoginPage>
     );
 
     String _email, _password;
-    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
     Future<String> signIn() async {
       final formState = _formkey.currentState;
       if (formState.validate()) {
         formState.save();
         //Login FIREBASE
-        AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
-            email: _email, password: _password);
-        FirebaseUser user = result.user;
-        Navigator.pushNamed(context, '/Library');
+        String response = await FirebaseUs().login(_email, _password);
+        switch (response) {
+          case "ERROR_WRONG_PASSWORD":
+            print('senha inválida');
+            Navigator.pop(context);
+            _showLoginResponse('Cadastrado', 'Senha incorreta :(');
+            break;
+          case "ERROR_USER_NOT_FOUND":
+            print('Usuário não está cadastrado! ');
+            Navigator.pop(context);
+            _showLoginResponse(
+                'Não Cadastrado :(', 'Email não cadastrado, cadastre-se!');
+            break;
+        }
+
+        /*   Navigator.pushNamedAndRemoveUntil(
+            context, '/Library', (Route<dynamic> route) => false);
+         */
       }
     }
 
@@ -162,7 +176,7 @@ class _LoginPageState extends State<LoginPage>
         color: Colors.white,
       ),
       autofocus: false,
-      initialValue: 'some password',
+      initialValue: '123456789',
       obscureText: true,
       decoration: InputDecoration(
         hintText: 'Senha',
@@ -177,7 +191,35 @@ class _LoginPageState extends State<LoginPage>
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
-        onPressed: signIn,
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                    content: new Container(
+                  width: 150,
+                  height: 150,
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      new Text(
+                        'Peraí, vou ver se tu tá cadastrado... ',
+                        textAlign: TextAlign.center,
+                      ),
+                      Spacer(),
+                      Expanded(
+                        child: FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    ],
+                  ),
+                ));
+              });
+          signIn();
+        },
         padding: EdgeInsets.all(12),
         color: Colors.orangeAccent[900],
         child: Text('Log In', style: TextStyle(color: Colors.black)),
@@ -281,6 +323,49 @@ class _LoginPageState extends State<LoginPage>
         ),
       ),
     );
+  }
+
+  _showLoginResponse(String title, String messege) {
+    final tryAgainButton = FlatButton(
+      child: Text("Ok! "),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    final toLibraryButton = FlatButton(
+      child: Text("Quero ver Animes! "),
+      onPressed: () {
+        Navigator.of(context).pushNamed('/Library');
+      },
+    );
+
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: new Container(
+              width: 200,
+              height: 100,
+              child: new Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  new Text(
+                    messege,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 19),
+                  ),
+                ],
+              ),
+            ),
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+            ),
+            actions: <Widget>[tryAgainButton, toLibraryButton],
+          );
+        });
   }
 
   void updateBubblePosition() {
