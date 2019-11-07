@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/main.dart';
 import 'package:flutter_app/pages/Login.dart';
 import 'package:flutter_app/pages/PerfilGui.dart';
 import 'dart:math';
@@ -180,6 +181,11 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
         "title": "Assistidos",
         "color": Colors.white,
       },
+      {
+        "icon": Icons.exit_to_app,
+        "title": "Desconectar",
+        "color": Colors.white,
+      },
 
     ];
 
@@ -210,10 +216,10 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
                       MaterialPageRoute(builder: (context) => Guillotine()),
                     );
                   }
-                else if(menuItem["title"] == "Favoritos"){
+                else if(menuItem["title"] == "Desconectar"){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      MaterialPageRoute(builder: (context) => BottomNavBar()),
                     );
                   }
                 },
