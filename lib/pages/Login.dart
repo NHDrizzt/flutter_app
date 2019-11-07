@@ -1,7 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/Perfil.dart';
+import 'package:flutter_app/pages/PerfilGui.dart';
 import 'package:flutter_app/pages/Register.dart';
 import 'package:flutter_app/pages/TrocaSenha.dart';
 import 'dart:math';
@@ -177,7 +175,12 @@ class _LoginPageState extends State<LoginPage>
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
-        onPressed: signIn,
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Guillotine()),
+          );
+        },
         padding: EdgeInsets.all(12),
         color: Colors.orangeAccent[900],
         child: Text('Log In', style: TextStyle(color: Colors.black)),

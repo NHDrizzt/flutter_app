@@ -1,9 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter_app/pages/Perfil.dart';
-import 'package:flutter_app/pages/authentication.dart';
-import 'package:flutter_app/pages/root_page.dart';
 import 'pages/Login.dart';
 import 'pages/SecondRoute.dart';
 import 'pages/TabBarAnimation.dart';
