@@ -1,9 +1,9 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/DAO/UsuarioDAO.dart';
 import 'package:flutter_app/pages/Perfil.dart';
+=======
+import 'package:flutter_app/pages/PerfilGui.dart';
 import 'package:flutter_app/pages/Register.dart';
 import 'package:flutter_app/pages/TrocaSenha.dart';
 import 'dart:math';
