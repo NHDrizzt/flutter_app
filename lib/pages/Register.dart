@@ -32,13 +32,46 @@ class _RegisterPageState extends State<RegisterPage> {
       //Valida se todos os campos do Form não retornaram erro
       if (formState.validate()) {
         formState.save();
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                  content: new Container(
+                width: 150,
+                height: 150,
+                child: new Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    new Text(
+                      'Peraí, vou fazer algumas verificações! ',
+                      textAlign: TextAlign.center,
+                    ),
+                    Spacer(),
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  ],
+                ),
+              ));
+            });
         if (await FirebaseUs().create(_emailCtrl.text, _passwordCtrl.text) !=
             null) {
+          Navigator.of(context).pop;
           _showDialog(context, "Email cadastrado! ",
               " Cadastrado com sucesso! ^u^", true);
         } else {
+          Navigator.of(context).pop;
           _showDialog(context, "Email já cadastrado",
               "Esta conta de email já está cadastrada, seu chupinga", false);
+          /* Future.delayed(Duration(seconds: 3), () {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                '/Login', (Route<dynamic> route) => false);
+          });
+          */
         }
       }
     }
@@ -135,7 +168,9 @@ class _RegisterPageState extends State<RegisterPage> {
           elevation: 10.0,
           shadowColor: Colors.white70,
           child: MaterialButton(
-            onPressed: _reg,
+            onPressed: () {
+              _reg();
+            },
             child: Text(
               'Criar Conta',
               style: TextStyle(
@@ -183,6 +218,11 @@ class _RegisterPageState extends State<RegisterPage> {
         if (value.isEmpty) {
           return 'Por favor, digite a(o) $label! ';
         }
+        if (label == 'Senha') {
+          if (value.length < 6) {
+            return 'No mínimo 6 dígitos! ';
+          }
+        }
       },
       decoration: InputDecoration(
         labelText: label,
@@ -211,11 +251,15 @@ _showDialog(
       title: new Text(titulo),
       content: new Text(conteudo),
       actions: <Widget>[
-        // define os botões na base do dialogo
+        // define os botões na base do dialog
         new FlatButton(
           child: new Text("Fechar"),
           onPressed: () {
             if (success) {
+              _nameCtrl.clear();
+              _nicknameCtrl.clear();
+              _passwordCtrl.clear();
+              _emailCtrl.clear();
               Navigator.popAndPushNamed(context, '/Library');
             } else {
               Navigator.of(context).pop();
@@ -227,6 +271,17 @@ _showDialog(
             }
           },
         ),
+        new FlatButton(
+          child: Text('Login'),
+          onPressed: () {
+            _nameCtrl.clear();
+            _nicknameCtrl.clear();
+            _passwordCtrl.clear();
+            _emailCtrl.clear();
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                '/Login', (Route<dynamic> route) => false);
+          },
+        )
       ]);
 
   return showDialog(
