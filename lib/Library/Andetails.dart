@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/DAO/AnimeDAO.dart';
 
+import 'fancy.dart';
+
 class detailsAnime extends StatefulWidget {
   @override
   _detailAn createState() => _detailAn();
@@ -51,29 +53,28 @@ class _detailAn extends State<detailsAnime> {
     DocumentSnapshot doc = ModalRoute.of(context).settings.arguments;
 
     final _icButtonCard = Container(
-      alignment: Alignment.topRight,
-      child:FloatingActionButton(
-         child: icon,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          mini: true,
-          foregroundColor: Colors.black,
-          onPressed: (){
-            setState(() {
-              if (widthContainer == 15) {
-                botrigthBorder =  Radius.circular(140.0);
-                toprigthBorder =  Radius.circular(10.0);
-                widthContainer = 300;
-                icon = icon = Icon(Icons.arrow_back_ios);
-              } else {
-                botrigthBorder =  Radius.circular(200.0);
-                toprigthBorder =  Radius.circular(200.0);
-                icon = null;
-                widthContainer = 15;
-              }
-            });
-          })
-    );
+        alignment: Alignment.topRight,
+        child: FloatingActionButton(
+            child: icon,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            mini: true,
+            foregroundColor: Colors.black,
+            onPressed: () {
+              setState(() {
+                if (widthContainer == 15) {
+                  botrigthBorder = Radius.circular(140.0);
+                  toprigthBorder = Radius.circular(10.0);
+                  widthContainer = 300;
+                  icon = icon = Icon(Icons.arrow_back_ios);
+                } else {
+                  botrigthBorder = Radius.circular(200.0);
+                  toprigthBorder = Radius.circular(200.0);
+                  icon = null;
+                  widthContainer = 15;
+                }
+              });
+            }));
 
     //Card no meio da Tela
     final _centerCard = Positioned(
@@ -82,13 +83,13 @@ class _detailAn extends State<detailsAnime> {
           onTap: () {
             setState(() {
               if (widthContainer == 15) {
-                botrigthBorder =  Radius.circular(140.0);
-                toprigthBorder =  Radius.circular(10.0);
+                botrigthBorder = Radius.circular(140.0);
+                toprigthBorder = Radius.circular(10.0);
                 widthContainer = 300;
                 icon = icon = Icon(Icons.arrow_back_ios);
               } else {
-                botrigthBorder =  Radius.circular(200.0);
-                toprigthBorder =  Radius.circular(200.0);
+                botrigthBorder = Radius.circular(200.0);
+                toprigthBorder = Radius.circular(200.0);
                 widthContainer = 15;
                 icon = null;
               }
@@ -103,14 +104,12 @@ class _detailAn extends State<detailsAnime> {
               children: <Widget>[
                 _icButtonCard,
                 _centerCardContainer(doc),
-                ],
+              ],
             ),
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
-                  bottomRight: botrigthBorder,
-                  topRight: toprigthBorder
-                )),
+                    bottomRight: botrigthBorder, topRight: toprigthBorder)),
           ),
         ));
 
@@ -132,17 +131,78 @@ class _detailAn extends State<detailsAnime> {
 
 //Descrição do Anime
 Widget _descAnime(DocumentSnapshot doc) {
+  final fancybutton = Align(
+    alignment: Alignment.bottomLeft,
+    child: Container(
+      child: FancyButton(
+        child: Text(
+          "Adicionar!",
+          style: TextStyle(color: Colors.white),
+        ),
+        size: 18,
+        color: Colors.black,
+      ),
+    ),
+  );
+  final fancybutton2 = Align(
+    alignment: Alignment.bottomCenter,
+    child: Container(
+      child: FancyButton(
+        child: Text(
+          "Já Assisti!",
+          style: TextStyle(color: Colors.white),
+        ),
+        size: 18,
+        color: Colors.black,
+      ),
+    ),
+  );
+
+  final fancybutton3 = Align(
+    alignment: Alignment.bottomRight,
+    child: Container(
+      child: FancyButton(
+        child: Text(
+          "Estou Assistindo!",
+          style: TextStyle(color: Colors.white),
+        ),
+        size: 18,
+        color: Colors.black,
+      ),
+    ),
+  );
+
+
   return Positioned(
     top: 230.0,
     child: new Container(
-        margin: new EdgeInsets.symmetric(vertical: 40.0),
+        margin: new EdgeInsets.symmetric(vertical: 70.0),
         padding: EdgeInsets.all(10.0),
-        width: 350,
-        height: 400,
+        width: 400,
+        height: 500,
         child: ListView(
           scrollDirection: Axis.vertical,
           children: <Widget>[
             _txtContent(doc['Descricao'], 17, FontWeight.w400),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: fancybutton,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: fancybutton2,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: fancybutton3,
+                  )
+                ],
+              ),
+            ),
           ],
         )),
   );
@@ -173,7 +233,7 @@ Widget _img(DocumentSnapshot doc, BuildContext context) {
 Widget _centerCardContainer(DocumentSnapshot doc) {
   final _centerCardContent = ListView(
     scrollDirection: Axis.horizontal,
-    padding:EdgeInsets.all(15.0) ,
+    padding: EdgeInsets.all(15.0),
     children: <Widget>[
       Column(
         crossAxisAlignment: CrossAxisAlignment.center,

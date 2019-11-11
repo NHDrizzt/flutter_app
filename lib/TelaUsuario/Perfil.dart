@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
-import 'package:flutter_app/pages/Login.dart';
-import 'package:flutter_app/pages/PerfilGui.dart';
+import 'package:flutter_app/TelaNavBar/Login.dart';
+import 'package:flutter_app/TelaUsuario/PerfilGui.dart';
 import 'dart:math';
 
 class Perfil extends StatefulWidget {

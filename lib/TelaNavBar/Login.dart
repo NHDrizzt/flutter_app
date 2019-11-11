@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/DAO/UsuarioDAO.dart';
-import 'package:flutter_app/pages/Perfil.dart';
-=======
-import 'package:flutter_app/pages/PerfilGui.dart';
-import 'package:flutter_app/pages/Register.dart';
-import 'package:flutter_app/pages/TrocaSenha.dart';
+import 'package:flutter_app/TelaNavBar/Cadastro/Register.dart';
+import 'package:flutter_app/TelaNavBar/Cadastro/TrocaSenha.dart';
 import 'dart:math';
 
 final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
@@ -142,7 +139,7 @@ class _LoginPageState extends State<LoginPage>
             break;
           default:
             Navigator.pushNamedAndRemoveUntil(
-                context, '/Perfil', (Route<dynamic> route) => false);
+                context, '/Guilhotina', (Route<dynamic> route) => false);
             break;
         }
       }

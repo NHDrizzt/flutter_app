@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter_app/pages/Perfil.dart';
-import 'package:flutter_app/pages/Register.dart';
-import 'package:flutter_app/pages/authentication.dart';
-import 'package:flutter_app/pages/root_page.dart';
-import 'pages/Login.dart';
-import 'pages/SecondRoute.dart';
-import 'pages/TabBarAnimation.dart';
-import 'pages/Library/Andetails.dart';
+import 'package:flutter_app/TelaUsuario/Perfil.dart';
+import 'package:flutter_app/TelaUsuario/PerfilGui.dart';
+import 'package:flutter_app/TelaNavBar/Cadastro/Register.dart';
+import 'package:flutter_app/Rota/authentication.dart';
+import 'package:flutter_app/Rota//root_page.dart';
+import 'Library/Andetails.dart';
+import 'TelaNavBar/Login.dart';
+import 'TelaNavBar/SecondRoute.dart';
+import 'TelaNavBar/TabBarAnimation.dart';
+
 
 void main() => runApp(MaterialApp(
       home: BottomNavBar(),
@@ -18,6 +20,7 @@ void main() => runApp(MaterialApp(
         '/Details': (context) => detailsAnime(),
         '/Register': (context) => RegisterPage(),
         '/Perfil': (context) => Perfil(),
+        '/Guilhotina': (context) => Guillotine(),
       },
     ));
 

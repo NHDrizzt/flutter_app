@@ -55,18 +55,24 @@ Hero _cardUtilFirebase(DocumentSnapshot doc, BuildContext context) {
           Radius.circular(5.0) //         <--- border radius here
           ),
     ),
-    child: Text(
-      doc['Nome'],
+    child: Column(
+        children: <Widget>[
+          Text(
+            doc['Nome'],
 
-      /// <--------- FIREBASE
-      style: TextStyle(
-        fontSize: 10,
-        color: Colors.white,
-        fontWeight: FontWeight.w600,
-      ),
-      textAlign: TextAlign.center,
-    ),
+            /// <--------- FIREBASE
+            style: TextStyle(
+              fontSize: 10,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+    )
   );
+
+
 
   final stackFundo = Stack(
     alignment: Alignment.bottomCenter,
@@ -101,5 +107,6 @@ Hero _cardUtilFirebase(DocumentSnapshot doc, BuildContext context) {
               ],
             )),
       ));
+
 
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/Login.dart';
-import 'package:flutter_app/pages/Perfil.dart';
-import 'package:flutter_app/pages/authentication.dart';
-import 'package:flutter_app/pages/Perfil.dart';
+import 'package:flutter_app/TelaNavBar/Login.dart';
+import 'package:flutter_app/TelaUsuario/Perfil.dart';
+import 'package:flutter_app/Rota//authentication.dart';
+import 'package:flutter_app/TelaUsuario/Perfil.dart';
 
 /*
 
