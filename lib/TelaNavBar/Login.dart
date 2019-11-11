@@ -19,7 +19,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
   bool selected = false;
-  double padValue = 100;
+  double padValue = -100;
   double opacidade = 0.0;
   AnimationController _controller;
   List<Bubble> bubbles;
@@ -49,9 +49,9 @@ class _LoginPageState extends State<LoginPage>
     _controller = new AnimationController(
         duration: const Duration(seconds: 2000), vsync: this);
     _controller.addListener(() {
-      updateBubblePosition();
       _updatePadding(0);
       _changeOpacity();
+      updateBubblePosition();
     });
     _controller.forward();
   }
@@ -70,45 +70,49 @@ class _LoginPageState extends State<LoginPage>
         padding: EdgeInsets.only(top: 10),
         child: Stack(
           children: <Widget>[
-            CircleAvatar(
-              backgroundColor: Colors.transparent,
-              maxRadius: 135,
-
-              //Tentar fade in para colocar gif de "loading" Eclipse.gif
-
-              backgroundImage: NetworkImage(
-                  'https://i.kym-cdn.com/photos/images/original/001/551/110/769.gif'),
+            Align(
+              alignment: Alignment.center,
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                maxRadius: 135,
+                //Tentar fade in para colocar gif de "loading" Eclipse.gif
+                backgroundImage: NetworkImage(
+                    'https://i.kym-cdn.com/photos/images/original/001/551/110/769.gif'),
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 30, bottom: 0),
+              padding: const EdgeInsets.only(top: 300, bottom: 0),
               child: AnimatedOpacity(
                 opacity: opacidade,
                 duration: Duration(seconds: 2),
-                child: Text(
-                  'Otaku Library',
-                  textScaleFactor: 2.0,
-                  style: TextStyle(
-                    color: Colors.orange,
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.bold,
-                    shadows: <Shadow>[
-                      Shadow(
-                        offset: Offset(2.0, 2.0),
-                        blurRadius: 3.0,
-                        color: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                      Shadow(
-                        offset: Offset(2.0, 2.0),
-                        blurRadius: 8.0,
-                        color: Color.fromARGB(125, 0, 0, 255),
-                      ),
-                    ],
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Otaku Library',
+                    textScaleFactor: 2.0,
+                    style: TextStyle(
+                      color: Colors.orange,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.bold,
+                      shadows: <Shadow>[
+                        Shadow(
+                          offset: Offset(2.0, 2.0),
+                          blurRadius: 3.0,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                        Shadow(
+                          offset: Offset(2.0, 2.0),
+                          blurRadius: 8.0,
+                          color: Color.fromARGB(125, 0, 0, 255),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
             AnimatedPadding(
-              padding: EdgeInsets.all(padValue),
+              padding: EdgeInsets.all(0),
               duration: const Duration(milliseconds: 1500),
               curve: Curves.easeInOut,
             ),
