@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/DAO/AnimeDAO.dart';
 
-import 'fancy.dart';
+import '../Util/fancy.dart';
 
 class detailsAnime extends StatefulWidget {
   @override
