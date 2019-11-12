@@ -1,63 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Rota/auth_provider.dart';
+import 'package:flutter_app/Rota/authentication.dart';
 import 'package:flutter_app/TelaNavBar/Login.dart';
+import 'package:flutter_app/TelaUsuario/PageState.dart';
+import 'package:flutter_app/TelaUsuario/PerfilGui.dart';
 import 'package:flutter_app/TelaUsuario/Perfil.dart';
-import 'package:flutter_app/Rota//authentication.dart';
-import 'package:flutter_app/TelaUsuario/Perfil.dart';
-
-/*
-
-enum AuthStatus {
-  NOT_DETERMINED,
-  NOT_LOGGED_IN,
-  LOGGED_IN,
-}
 
 class RootPage extends StatefulWidget {
-  RootPage({this.auth});
-
-  final BaseAuth auth;
-
   @override
-  State<StatefulWidget> createState() => new _RootPageState();
+  State<StatefulWidget> createState() => _RootPageState();
+}
+
+enum AuthStatus {
+  notDetermined,
+  notSignedIn,
+  signedIn,
 }
 
 class _RootPageState extends State<RootPage> {
-  AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
-  String _userId = "";
+  AuthStatus authStatus = AuthStatus.notDetermined;
 
   @override
-  void initState() {
-    super.initState();
-    widget.auth.getCurrentUser().then((user) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final BaseAuth auth = AuthProvider.of(context).auth;
+    auth.currentUser().then((String userId) {
       setState(() {
-        if (user != null) {
-          _userId = user?.uid;
-        }
-        authStatus =
-        user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
+        authStatus = userId == null ? AuthStatus.notSignedIn : AuthStatus.signedIn;
       });
     });
   }
 
-  void loginCallback() {
-    widget.auth.getCurrentUser().then((user) {
-      setState(() {
-        _userId = user.uid.toString();
-      });
-    });
+  void _signedIn() {
     setState(() {
-      authStatus = AuthStatus.LOGGED_IN;
+      authStatus = AuthStatus.signedIn;
     });
   }
 
-  void logoutCallback() {
+  void _signedOut() {
     setState(() {
-      authStatus = AuthStatus.NOT_LOGGED_IN;
-      _userId = "";
+      authStatus = AuthStatus.notSignedIn;
     });
   }
 
-  Widget buildWaitingScreen() {
+  @override
+  Widget build(BuildContext context) {
+    switch (authStatus) {
+      case AuthStatus.notDetermined:
+        return _buildWaitingScreen();
+      case AuthStatus.notSignedIn:
+        return LoginPage(
+        );
+      case AuthStatus.signedIn:
+        return Perfil(
+          onSignedOut: _signedOut,
+        );
+    }
+    return null;
+  }
+
+  Widget _buildWaitingScreen() {
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
@@ -65,34 +67,4 @@ class _RootPageState extends State<RootPage> {
       ),
     );
   }
-
-
-  @override
-  Widget build(BuildContext context) {
-    switch (authStatus) {
-      case AuthStatus.NOT_DETERMINED:
-        return buildWaitingScreen();
-        break;
-      case AuthStatus.NOT_LOGGED_IN:
-        return new LoginPage(
-          auth: widget.auth,
-          loginCallback: loginCallback,
-        );
-        break;
-      case AuthStatus.LOGGED_IN:
-        if (_userId.length > 0 && _userId != null) {
-          return new Perfil(
-            userId: _userId,
-            auth: widget.auth,
-            logoutCallback: logoutCallback,
-          );
-        } else
-          return buildWaitingScreen();
-        break;
-      default:
-        return buildWaitingScreen();
-    }
-  }
-
 }
-*/

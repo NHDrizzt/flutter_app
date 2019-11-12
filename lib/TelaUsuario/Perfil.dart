@@ -1,20 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Rota/auth_provider.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/TelaNavBar/Login.dart';
 import 'package:flutter_app/TelaUsuario/PerfilGui.dart';
 import 'dart:math';
+import 'package:flutter_app/Rota/authentication.dart';
 
 class Perfil extends StatefulWidget {
+  Perfil({this.auth, this.onSignedOut});
+  final BaseAuth auth;
+  final VoidCallback onSignedOut;
   @override
   _PerfilState createState() => new _PerfilState();
+
+
 }
 
 
 class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
+  _PerfilState({this.auth, this.onSignedOut});
+  final BaseAuth auth;
+  final VoidCallback onSignedOut;
+
   AnimationController animationControllerMenu;
   Animation<double> animationMenu;
   Animation<double> animationTitleFadeInOut;
   _GuillotineAnimationStatus menuAnimationStatus = _GuillotineAnimationStatus.closed;
+
+
+  Future<void> _signOut(BuildContext context) async {
+    try{
+      final BaseAuth auth = AuthProvider.of(context).auth;
+      await auth.signOut();
+      onSignedOut();
+    }catch(e){
+      print(e);
+    }
+  }
 
 
   void _playAnimation() {
@@ -79,6 +101,8 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
     animationControllerMenu.dispose();
     super.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context){
@@ -217,10 +241,7 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
                     );
                   }
                 else if(menuItem["title"] == "Desconectar"){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => BottomNavBar()),
-                    );
+                    _signOut(context);
                   }
                 },
               ),
