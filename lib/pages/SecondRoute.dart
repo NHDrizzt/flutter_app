@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import '../Util/AnLibraryGrid.dart';
+import '../pages/Library/AnLibraryGrid.dart';
 
 class SecondRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final _widthScreen = MediaQuery.of(context).size.width;
+    final _heightScreen = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.black87,
       appBar: AppBar(
@@ -12,7 +15,7 @@ class SecondRoute extends StatelessWidget {
           title: Center(
             child: Text("Otaku Library"),
           )),
-      body: gridViewFromFirebase(context),
+      body: gridViewFromFirebase(context, _widthScreen, _heightScreen),
     );
   }
 }
