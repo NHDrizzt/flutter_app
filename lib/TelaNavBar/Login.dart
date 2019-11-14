@@ -4,17 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/DAO/UsuarioDAO.dart';
 import 'package:flutter_app/TelaNavBar/Cadastro/Register.dart';
 import 'package:flutter_app/TelaNavBar/Cadastro/TrocaSenha.dart';
-import 'package:flutter_app/autenticacao/auth.dart';
 import 'dart:math';
-import 'package:flutter_app/globals.dart' as globals;
+import 'package:flutter_app/Library/globals.dart' as globals;
 
 final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
-  LoginPage({this.auth});
-  final BaseAuth auth;
-
   @override
   _LoginPageState createState() {
     return _LoginPageState();
@@ -81,7 +77,6 @@ class _LoginPageState extends State<LoginPage>
               child: CircleAvatar(
                 backgroundColor: Colors.transparent,
                 maxRadius: 135,
-                //Tentar fade in para colocar gif de "loading" Eclipse.gif
                 backgroundImage: NetworkImage(
                     'https://i.kym-cdn.com/photos/images/original/001/551/110/769.gif'),
               ),
@@ -133,9 +128,7 @@ class _LoginPageState extends State<LoginPage>
       final formState = _formkey.currentState;
       if (formState.validate()) {
         formState.save();
-        //Login FIREBASE
         String response = await FirebaseUs().login(_email, _password);
-
         try {
           FirebaseUser user = (await FirebaseAuth.instance
               .signInWithEmailAndPassword(email: _email, password: _password))

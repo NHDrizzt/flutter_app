@@ -1,13 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/TelaNavBar/Cadastro/Register.dart';
-import 'package:flutter_app/autenticacao/auth.dart';
 import '../Util/fancy.dart';
-import 'package:flutter_app/globals.dart' as globals;
+import 'package:flutter_app/Library/globals.dart' as globals;
 
 class detailsAnime extends StatefulWidget {
-  detailsAnime({this.auth});
-  final Auth auth;
   @override
   _detailAn createState() => _detailAn();
 }
@@ -18,9 +14,6 @@ class _detailAn extends State<detailsAnime> {
   Color bckcolor = Colors.transparent;
   Radius toprigthBorder = Radius.circular(5.0);
   Radius botrigthBorder = Radius.circular(130.0);
-
-
-
 
   //AppBar
   final _posAppbar = AppBar(
@@ -38,7 +31,6 @@ class _detailAn extends State<detailsAnime> {
     elevation: 0.0,
   );
 
-  //Transição de cores
   final _getGradient = Container(
     margin: new EdgeInsets.only(top: 170.0),
     height: 110.0,
