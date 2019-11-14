@@ -3,18 +3,15 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter_app/TelaUsuario/Perfil.dart';
 import 'package:flutter_app/TelaUsuario/PerfilGui.dart';
 import 'package:flutter_app/TelaNavBar/Cadastro/Register.dart';
-import 'package:flutter_app/Rota/authentication.dart';
-import 'package:flutter_app/Rota//root_page.dart';
 import 'Library/Andetails.dart';
 import 'TelaNavBar/Login.dart';
 import 'TelaNavBar/SecondRoute.dart';
-import 'TelaNavBar/TabBarAnimation.dart';
 
 
 void main() => runApp(MaterialApp(
       home: BottomNavBar(),
       routes: {
-        '/Inicial': (context) => TabBarAnimation(),
+        '/Inicial': (context) => BottomNavBar(),
         '/Library': (context) => SecondRoute(),
         '/Login': (context) => LoginPage(),
         '/Details': (context) => detailsAnime(),
@@ -35,7 +32,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final _pageOption = [
     LoginPage(),
     SecondRoute(),
-    //new RootPage(auth: new Auth()),
   ];
 
   @override

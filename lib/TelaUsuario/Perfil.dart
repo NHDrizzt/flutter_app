@@ -1,41 +1,32 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/Rota/auth_provider.dart';
 import 'package:flutter_app/TelaNavBar/SecondRoute.dart';
-import 'package:flutter_app/main.dart';
-import 'package:flutter_app/TelaNavBar/Login.dart';
 import 'package:flutter_app/TelaUsuario/PerfilGui.dart';
 import 'dart:math';
-import 'package:flutter_app/Rota/authentication.dart';
-
 class Perfil extends StatefulWidget {
-  Perfil({this.auth, this.onSignedOut});
-  final BaseAuth auth;
-  final VoidCallback onSignedOut;
+  //Perfil({this.auth});
+  //final BaseAuth auth;
 
-  Future<void> signOut(BuildContext context) async {
-    try{
-      final BaseAuth auth = AuthProvider.of(context).auth;
-      await auth.signOut();
-      onSignedOut();
-    }catch(e){
-      print(e);
-    }
-  }
   @override
   _PerfilState createState() => new _PerfilState();
 }
 
-
 class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
+/*
+  void _signOut() async {
+    try{
+      await widget.auth.signOut();
+    }catch(e){
+      print('Error: $e');
+    }
+  }
+
+ */
 
   AnimationController animationControllerMenu;
   Animation<double> animationMenu;
   Animation<double> animationTitleFadeInOut;
   _GuillotineAnimationStatus menuAnimationStatus = _GuillotineAnimationStatus.closed;
-
-
-
-
 
   void _playAnimation() {
     try {
@@ -99,8 +90,6 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
     animationControllerMenu.dispose();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context){
@@ -239,8 +228,9 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
                     );
                   }
                 else if(menuItem["title"] == "Desconectar"){
-                    //   _signOut(context);
-                  }
+                    FirebaseAuth.instance.signOut();
+                    Navigator.of(context).pushNamedAndRemoveUntil('/Inicial', (Route<dynamic> route) => false);
+                }
                   else if(menuItem["title"] == "Otaku Library"){
                     Navigator.push(
                       context,

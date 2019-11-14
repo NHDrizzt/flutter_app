@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/DAO/UsuarioDAO.dart';
@@ -130,6 +131,16 @@ class _LoginPageState extends State<LoginPage>
         formState.save();
         //Login FIREBASE
         String response = await FirebaseUs().login(_email, _password);
+
+        try {
+          FirebaseUser user = (await FirebaseAuth.instance
+              .signInWithEmailAndPassword(email: _email, password: _password))
+              .user;
+          print('Signed in: ${user.uid}');
+        }
+        catch(e){
+          print('Error: $e');
+        }
         switch (response) {
           case "ERROR_WRONG_PASSWORD":
             print('senha inválida');
@@ -148,6 +159,7 @@ class _LoginPageState extends State<LoginPage>
             break;
         }
       }
+      return null;
     }
 
     final email = TextFormField(
@@ -177,6 +189,9 @@ class _LoginPageState extends State<LoginPage>
         }
         if (value.length < 6) {
           return 'Ao menos 6 dígitos! ';
+        }
+        else{
+          return null;
         }
       },
       style: TextStyle(
