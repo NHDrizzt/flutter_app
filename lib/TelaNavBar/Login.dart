@@ -152,9 +152,11 @@ class _LoginPageState extends State<LoginPage>
 
     final email = TextFormField(
       onSaved: (input) => _email = input,
-      validator: (value) {
+      validator: (value){
         if (value.isEmpty) {
           return 'Por favor, digite o email! ';
+        }else{
+          return null;
         }
       },
       keyboardType: TextInputType.emailAddress,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Rota/auth_provider.dart';
 import 'package:flutter_app/Rota/authentication.dart';
+import 'package:flutter_app/TelaNavBar/SecondRoute.dart';
 import 'package:flutter_app/TelaUsuario/Perfil.dart';
 import 'PageState.dart';
 import 'Perfil.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Rota/auth_provider.dart';
+import 'package:flutter_app/TelaNavBar/SecondRoute.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/TelaNavBar/Login.dart';
 import 'package:flutter_app/TelaUsuario/PerfilGui.dart';
@@ -10,25 +11,8 @@ class Perfil extends StatefulWidget {
   Perfil({this.auth, this.onSignedOut});
   final BaseAuth auth;
   final VoidCallback onSignedOut;
-  @override
-  _PerfilState createState() => new _PerfilState();
 
-
-}
-
-
-class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
-  _PerfilState({this.auth, this.onSignedOut});
-  final BaseAuth auth;
-  final VoidCallback onSignedOut;
-
-  AnimationController animationControllerMenu;
-  Animation<double> animationMenu;
-  Animation<double> animationTitleFadeInOut;
-  _GuillotineAnimationStatus menuAnimationStatus = _GuillotineAnimationStatus.closed;
-
-
-  Future<void> _signOut(BuildContext context) async {
+  Future<void> signOut(BuildContext context) async {
     try{
       final BaseAuth auth = AuthProvider.of(context).auth;
       await auth.signOut();
@@ -37,6 +21,20 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
       print(e);
     }
   }
+  @override
+  _PerfilState createState() => new _PerfilState();
+}
+
+
+class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
+
+  AnimationController animationControllerMenu;
+  Animation<double> animationMenu;
+  Animation<double> animationTitleFadeInOut;
+  _GuillotineAnimationStatus menuAnimationStatus = _GuillotineAnimationStatus.closed;
+
+
+
 
 
   void _playAnimation() {
@@ -182,7 +180,7 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
     final List<Map> _menus = <Map>[
       {
         "icon": Icons.person,
-        "title": "Perfil",
+        "title": "Otaku Library",
         "color": Colors.white,
       },
       {
@@ -241,7 +239,13 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
                     );
                   }
                 else if(menuItem["title"] == "Desconectar"){
-                    _signOut(context);
+                    //   _signOut(context);
+                  }
+                  else if(menuItem["title"] == "Otaku Library"){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SecondRoute()),
+                    );
                   }
                 },
               ),
