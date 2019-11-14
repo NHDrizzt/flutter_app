@@ -1,12 +1,13 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/DAO/AnimeDAO.dart';
-
+import 'package:flutter_app/TelaNavBar/Cadastro/Register.dart';
+import 'package:flutter_app/autenticacao/auth.dart';
 import '../Util/fancy.dart';
+import 'package:flutter_app/globals.dart' as globals;
 
 class detailsAnime extends StatefulWidget {
+  detailsAnime({this.auth});
+  final Auth auth;
   @override
   _detailAn createState() => _detailAn();
 }
@@ -17,6 +18,9 @@ class _detailAn extends State<detailsAnime> {
   Color bckcolor = Colors.transparent;
   Radius toprigthBorder = Radius.circular(5.0);
   Radius botrigthBorder = Radius.circular(130.0);
+
+
+
 
   //AppBar
   final _posAppbar = AppBar(
@@ -113,20 +117,67 @@ class _detailAn extends State<detailsAnime> {
           ),
         ));
 
-    return Scaffold(
-      //    body: _body(doc, context),
-      body: Stack(
-        children: <Widget>[
-          _img(doc, context),
-          // _getGradient,
-          _descAnime(doc),
-          _posAppbar,
-          _centerCard
-        ],
-      ),
-      backgroundColor: Colors.orange,
-    );
+    if(globals.isLoggedIn == true){
+        return Scaffold(
+          //    body: _body(doc, context),
+          body: Stack(
+            children: <Widget>[
+              _img(doc, context),
+              // _getGradient,
+              _descAnime(doc),
+              _posAppbar,
+              _centerCard
+            ],
+          ),
+          backgroundColor: Colors.orange,
+        );
+
+    }else if(globals.isLoggedIn == false){
+      return Scaffold(
+        //    body: _body(doc, context),
+        body: Stack(
+          children: <Widget>[
+            _img(doc, context),
+            // _getGradient,
+            _descAnime2(doc),
+            _posAppbar,
+            _centerCard
+          ],
+        ),
+        backgroundColor: Colors.orange,
+      );
+    }
   }
+}
+Widget _descAnime2(DocumentSnapshot doc) {
+  return Positioned(
+    top: 230.0,
+    child: new Container(
+        margin: new EdgeInsets.symmetric(vertical: 70.0),
+        padding: EdgeInsets.all(10.0),
+        width: 400,
+        height: 500,
+        child: ListView(
+          scrollDirection: Axis.vertical,
+          children: <Widget>[
+            _txtContent(doc['Descricao'], 17, FontWeight.w400),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(13.0),
+                  child: Opacity(
+                    opacity: 1.0,
+                    child: new FlatButton(
+                        child: new Text("Você precisa estar LOGADO para adicionar Animes"),color: Colors.red, onPressed: () {},
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        )),
+  );
 }
 
 //Descrição do Anime
@@ -173,6 +224,7 @@ Widget _descAnime(DocumentSnapshot doc) {
   );
 
 
+
   return Positioned(
     top: 230.0,
     child: new Container(
@@ -184,6 +236,7 @@ Widget _descAnime(DocumentSnapshot doc) {
           scrollDirection: Axis.vertical,
           children: <Widget>[
             _txtContent(doc['Descricao'], 17, FontWeight.w400),
+
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(

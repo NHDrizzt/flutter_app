@@ -6,6 +6,7 @@ import 'package:flutter_app/TelaNavBar/Cadastro/Register.dart';
 import 'Library/Andetails.dart';
 import 'TelaNavBar/Login.dart';
 import 'TelaNavBar/SecondRoute.dart';
+import 'autenticacao/auth.dart';
 
 
 void main() => runApp(MaterialApp(
@@ -21,13 +22,23 @@ void main() => runApp(MaterialApp(
       },
     ));
 
+
+
 class BottomNavBar extends StatefulWidget {
+  BottomNavBar({Key key, this.auth}) : super(key: key);
+  final Auth auth;
   @override
   _BottomNavBarState createState() => _BottomNavBarState();
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _page = 0;
+
+//  void _updateAuthStatus(AuthStatus status) {
+//    setState(() {
+//      authStatus = status;
+//    });
+//  }
 
   final _pageOption = [
     LoginPage(),

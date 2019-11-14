@@ -4,12 +4,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/DAO/UsuarioDAO.dart';
 import 'package:flutter_app/TelaNavBar/Cadastro/Register.dart';
 import 'package:flutter_app/TelaNavBar/Cadastro/TrocaSenha.dart';
+import 'package:flutter_app/autenticacao/auth.dart';
 import 'dart:math';
+import 'package:flutter_app/globals.dart' as globals;
 
 final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
+  LoginPage({this.auth});
+  final BaseAuth auth;
 
   @override
   _LoginPageState createState() {
@@ -142,8 +146,13 @@ class _LoginPageState extends State<LoginPage>
           print('Error: $e');
         }
         switch (response) {
+          case "ERROR_INVALID_EMAIL":
+            print('Email ou senha inválida');
+            Navigator.pop(context);
+            _showLoginResponse('Cadastrado', 'Email incorreta :(');
+            break;
           case "ERROR_WRONG_PASSWORD":
-            print('senha inválida');
+            print('Email ou senha inválida');
             Navigator.pop(context);
             _showLoginResponse('Cadastrado', 'Senha incorreta :(');
             break;
@@ -154,6 +163,7 @@ class _LoginPageState extends State<LoginPage>
                 'Não Cadastrado :(', 'Email não cadastrado, cadastre-se!');
             break;
           default:
+            globals.isLoggedIn = true;
             Navigator.pushNamedAndRemoveUntil(
                 context, '/Guilhotina', (Route<dynamic> route) => false);
             break;

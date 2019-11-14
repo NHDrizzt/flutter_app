@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/TelaNavBar/SecondRoute.dart';
 import 'package:flutter_app/TelaUsuario/PerfilGui.dart';
 import 'dart:math';
+import 'package:flutter_app/globals.dart' as globals;
+
+import 'package:flutter_app/autenticacao/auth.dart';
 class Perfil extends StatefulWidget {
-  //Perfil({this.auth});
-  //final BaseAuth auth;
+  Perfil({this.auth});
+  final Auth auth;
 
   @override
   _PerfilState createState() => new _PerfilState();
@@ -229,6 +232,7 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
                   }
                 else if(menuItem["title"] == "Desconectar"){
                     FirebaseAuth.instance.signOut();
+                    globals.isLoggedIn = false;
                     Navigator.of(context).pushNamedAndRemoveUntil('/Inicial', (Route<dynamic> route) => false);
                 }
                   else if(menuItem["title"] == "Otaku Library"){
