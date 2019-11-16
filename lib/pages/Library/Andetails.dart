@@ -40,6 +40,7 @@ class _detailAn extends State<detailsAnime> {
               color: Colors.orange,
             ),
             onPressed: () {
+              //Maneira provisória só pra testar mesmo
               FirebaseUs().addAnimeToFavorites(doc);
             })
       ],
