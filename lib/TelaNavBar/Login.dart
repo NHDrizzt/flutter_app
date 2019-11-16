@@ -1,15 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/DAO/UsuarioDAO.dart';
-import 'package:flutter_app/pages/Register.dart';
-import 'package:flutter_app/pages/TrocaSenha.dart';
+import 'package:flutter_app/TelaNavBar/Cadastro/Register.dart';
+import 'package:flutter_app/TelaNavBar/Cadastro/TrocaSenha.dart';
 import 'dart:math';
+import 'package:flutter_app/Library/globals.dart' as globals;
 
 final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
-
   @override
   _LoginPageState createState() {
     return _LoginPageState();
@@ -19,7 +20,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
   bool selected = false;
-  double padValue = 100;
+  double padValue = -100;
   double opacidade = 0.0;
   AnimationController _controller;
   List<Bubble> bubbles;
@@ -49,9 +50,9 @@ class _LoginPageState extends State<LoginPage>
     _controller = new AnimationController(
         duration: const Duration(seconds: 2000), vsync: this);
     _controller.addListener(() {
-      updateBubblePosition();
       _updatePadding(0);
       _changeOpacity();
+      updateBubblePosition();
     });
     _controller.forward();
   }
@@ -70,45 +71,48 @@ class _LoginPageState extends State<LoginPage>
         padding: EdgeInsets.only(top: 10),
         child: Stack(
           children: <Widget>[
-            CircleAvatar(
-              backgroundColor: Colors.transparent,
-              maxRadius: 135,
-
-              //Tentar fade in para colocar gif de "loading" Eclipse.gif
-
-              backgroundImage: NetworkImage(
-                  'https://i.kym-cdn.com/photos/images/original/001/551/110/769.gif'),
+            Align(
+              alignment: Alignment.center,
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                maxRadius: 135,
+                backgroundImage: NetworkImage(
+                    'https://i.kym-cdn.com/photos/images/original/001/551/110/769.gif'),
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 30, bottom: 0),
+              padding: const EdgeInsets.only(top: 300, bottom: 0),
               child: AnimatedOpacity(
                 opacity: opacidade,
                 duration: Duration(seconds: 2),
-                child: Text(
-                  'Otaku Library',
-                  textScaleFactor: 2.0,
-                  style: TextStyle(
-                    color: Colors.orange,
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.bold,
-                    shadows: <Shadow>[
-                      Shadow(
-                        offset: Offset(2.0, 2.0),
-                        blurRadius: 3.0,
-                        color: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                      Shadow(
-                        offset: Offset(2.0, 2.0),
-                        blurRadius: 8.0,
-                        color: Color.fromARGB(125, 0, 0, 255),
-                      ),
-                    ],
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Otaku Library',
+                    textScaleFactor: 2.0,
+                    style: TextStyle(
+                      color: Colors.orange,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.bold,
+                      shadows: <Shadow>[
+                        Shadow(
+                          offset: Offset(2.0, 2.0),
+                          blurRadius: 3.0,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                        Shadow(
+                          offset: Offset(2.0, 2.0),
+                          blurRadius: 8.0,
+                          color: Color.fromARGB(125, 0, 0, 255),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
             AnimatedPadding(
-              padding: EdgeInsets.all(padValue),
+              padding: EdgeInsets.all(0),
               duration: const Duration(milliseconds: 1500),
               curve: Curves.easeInOut,
             ),
@@ -123,11 +127,24 @@ class _LoginPageState extends State<LoginPage>
       final formState = _formkey.currentState;
       if (formState.validate()) {
         formState.save();
-        //Login FIREBASE
         String response = await FirebaseUs().login(_email, _password);
+        try {
+          FirebaseUser user = (await FirebaseAuth.instance
+                  .signInWithEmailAndPassword(
+                      email: _email, password: _password))
+              .user;
+          print('Signed in: ${user.uid}');
+        } catch (e) {
+          print('Error: $e');
+        }
         switch (response) {
+          case "ERROR_INVALID_EMAIL":
+            print('Email ou senha inválida');
+            Navigator.pop(context);
+            _showLoginResponse('Cadastrado', 'Email incorreta :(');
+            break;
           case "ERROR_WRONG_PASSWORD":
-            print('senha inválida');
+            print('Email ou senha inválida');
             Navigator.pop(context);
             _showLoginResponse('Cadastrado', 'Senha incorreta :(');
             break;
@@ -138,11 +155,13 @@ class _LoginPageState extends State<LoginPage>
                 'Não Cadastrado :(', 'Email não cadastrado, cadastre-se!');
             break;
           default:
+            globals.isLoggedIn = true;
             Navigator.pushNamedAndRemoveUntil(
-                context, '/Perfil', (Route<dynamic> route) => false);
+                context, '/Guilhotina', (Route<dynamic> route) => false);
             break;
         }
       }
+      return null;
     }
 
     final email = TextFormField(
@@ -150,6 +169,8 @@ class _LoginPageState extends State<LoginPage>
       validator: (value) {
         if (value.isEmpty) {
           return 'Por favor, digite o email! ';
+        } else {
+          return null;
         }
       },
       keyboardType: TextInputType.emailAddress,
@@ -170,6 +191,8 @@ class _LoginPageState extends State<LoginPage>
         }
         if (value.length < 6) {
           return 'Ao menos 6 dígitos! ';
+        } else {
+          return null;
         }
       },
       style: TextStyle(

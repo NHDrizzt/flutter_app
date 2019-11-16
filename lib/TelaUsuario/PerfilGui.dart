@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/Perfil.dart';
+import 'package:flutter_app/TelaUsuario/Perfil.dart';
 import 'PageState.dart';
 import 'Perfil.dart';
 

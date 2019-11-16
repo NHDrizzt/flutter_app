@@ -1,21 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/main.dart';
-import 'package:flutter_app/pages/Login.dart';
-import 'package:flutter_app/pages/PerfilGui.dart';
+import 'package:flutter_app/TelaNavBar/SecondRoute.dart';
+import 'package:flutter_app/TelaUsuario/PerfilGui.dart';
 import 'dart:math';
+import 'package:flutter_app/Library/globals.dart' as globals;
 
 class Perfil extends StatefulWidget {
+
   @override
   _PerfilState createState() => new _PerfilState();
 }
 
-
 class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
+
   AnimationController animationControllerMenu;
   Animation<double> animationMenu;
   Animation<double> animationTitleFadeInOut;
   _GuillotineAnimationStatus menuAnimationStatus = _GuillotineAnimationStatus.closed;
-
 
   void _playAnimation() {
     try {
@@ -27,7 +28,6 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
         animationControllerMenu.reverse().orCancel;
       }
     } on TickerCanceled {
-      // the animation go cancelled, probably because disposed
     }
   }
 
@@ -158,7 +158,7 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
     final List<Map> _menus = <Map>[
       {
         "icon": Icons.person,
-        "title": "Perfil",
+        "title": "Otaku Library",
         "color": Colors.white,
       },
       {
@@ -217,9 +217,14 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
                     );
                   }
                 else if(menuItem["title"] == "Desconectar"){
+                    FirebaseAuth.instance.signOut();
+                    globals.isLoggedIn = false;
+                    Navigator.of(context).pushNamedAndRemoveUntil('/Inicial', (Route<dynamic> route) => false);
+                }
+                  else if(menuItem["title"] == "Otaku Library"){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => BottomNavBar()),
+                      MaterialPageRoute(builder: (context) => SecondRoute()),
                     );
                   }
                 },
