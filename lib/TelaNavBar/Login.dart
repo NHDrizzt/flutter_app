@@ -4,17 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/DAO/UsuarioDAO.dart';
 import 'package:flutter_app/TelaNavBar/Cadastro/Register.dart';
 import 'package:flutter_app/TelaNavBar/Cadastro/TrocaSenha.dart';
-import 'package:flutter_app/autenticacao/auth.dart';
 import 'dart:math';
-import 'package:flutter_app/globals.dart' as globals;
+import 'package:flutter_app/Library/globals.dart' as globals;
 
 final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
-  LoginPage({this.auth});
-  final BaseAuth auth;
-
   @override
   _LoginPageState createState() {
     return _LoginPageState();
@@ -40,7 +36,6 @@ class _LoginPageState extends State<LoginPage>
 
   void initState() {
     super.initState();
-
 
     setState(() {
       selected = !selected;
@@ -81,7 +76,6 @@ class _LoginPageState extends State<LoginPage>
               child: CircleAvatar(
                 backgroundColor: Colors.transparent,
                 maxRadius: 135,
-                //Tentar fade in para colocar gif de "loading" Eclipse.gif
                 backgroundImage: NetworkImage(
                     'https://i.kym-cdn.com/photos/images/original/001/551/110/769.gif'),
               ),
@@ -133,16 +127,14 @@ class _LoginPageState extends State<LoginPage>
       final formState = _formkey.currentState;
       if (formState.validate()) {
         formState.save();
-        //Login FIREBASE
         String response = await FirebaseUs().login(_email, _password);
-
         try {
           FirebaseUser user = (await FirebaseAuth.instance
-              .signInWithEmailAndPassword(email: _email, password: _password))
+                  .signInWithEmailAndPassword(
+                      email: _email, password: _password))
               .user;
           print('Signed in: ${user.uid}');
-        }
-        catch(e){
+        } catch (e) {
           print('Error: $e');
         }
         switch (response) {
@@ -174,10 +166,10 @@ class _LoginPageState extends State<LoginPage>
 
     final email = TextFormField(
       onSaved: (input) => _email = input,
-      validator: (value){
+      validator: (value) {
         if (value.isEmpty) {
           return 'Por favor, digite o email! ';
-        }else{
+        } else {
           return null;
         }
       },
@@ -199,8 +191,7 @@ class _LoginPageState extends State<LoginPage>
         }
         if (value.length < 6) {
           return 'Ao menos 6 dígitos! ';
-        }
-        else{
+        } else {
           return null;
         }
       },

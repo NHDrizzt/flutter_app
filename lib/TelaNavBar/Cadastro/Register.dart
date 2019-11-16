@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/DAO/UsuarioDAO.dart';
 import 'package:flutter_app/Model/colors.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:flutter_app/Model/User.dart';
 
 TextEditingController _nameCtrl = new TextEditingController();
 TextEditingController _passwordCtrl = new TextEditingController();
@@ -27,7 +28,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    void _reg() async {
+    //Essa função cadastra um usuario na base e mostra um AlertDialog
+    void _regUserInDatabase() async {
       final formState = _formkeyReg.currentState;
       //Valida se todos os campos do Form não retornaram erro
       if (formState.validate()) {
@@ -58,12 +60,19 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ));
             });
-        if (await FirebaseUs().create(_emailCtrl.text, _passwordCtrl.text) !=
-            null) {
+
+        ///Construindo um objeto Usuario
+        User newUser = new User(_nameCtrl.text, _nicknameCtrl.text,
+            _passwordCtrl.text, _emailCtrl.text);
+        //Enviando para cadastro
+
+        //Essa chamada de função é a parte responsável por cadastrar e validar o usuário
+        if (await FirebaseUs().create(newUser)) {
           Navigator.of(context).pop;
           _showDialog(context, "Email cadastrado! ",
               " Cadastrado com sucesso! ^u^", true);
         } else {
+          //Se a função create retornar false, significa que o usuário está cadastrado
           Navigator.of(context).pop;
           _showDialog(context, "Email já cadastrado",
               "Esta conta de email já está cadastrada, seu chupinga", false);
@@ -169,7 +178,7 @@ class _RegisterPageState extends State<RegisterPage> {
           shadowColor: Colors.white70,
           child: MaterialButton(
             onPressed: () {
-              _reg();
+              _regUserInDatabase();
             },
             child: Text(
               'Criar Conta',
@@ -247,41 +256,51 @@ class _RegisterPageState extends State<RegisterPage> {
 
 _showDialog(
     BuildContext context, String titulo, String conteudo, bool success) {
+  //Botão de "fechar" do AlertDialog
+  final _btnClose = new FlatButton(
+    child: new Text("Fechar"),
+    onPressed: () {
+      if (success) {
+        _nameCtrl.clear();
+        _nicknameCtrl.clear();
+        _passwordCtrl.clear();
+        _emailCtrl.clear();
+        Navigator.popAndPushNamed(context, '/Library');
+      } else {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        _nameCtrl.clear();
+        _nicknameCtrl.clear();
+        _passwordCtrl.clear();
+        _emailCtrl.clear();
+      }
+    },
+  );
+
+  //Botão de "login" do AlertdDialog
+  Widget _btnLogin = new FlatButton(
+    child: Text('Login'),
+    onPressed: () {
+      _nameCtrl.clear();
+      _nicknameCtrl.clear();
+      _passwordCtrl.clear();
+      _emailCtrl.clear();
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/Login', (Route<dynamic> route) => false);
+    },
+  );
+
+  if (success) {
+    _btnLogin = null;
+  }
+
   final _dig = AlertDialog(
       title: new Text(titulo),
       content: new Text(conteudo),
       actions: <Widget>[
         // define os botões na base do dialog
-        new FlatButton(
-          child: new Text("Fechar"),
-          onPressed: () {
-            if (success) {
-              _nameCtrl.clear();
-              _nicknameCtrl.clear();
-              _passwordCtrl.clear();
-              _emailCtrl.clear();
-              Navigator.popAndPushNamed(context, '/Library');
-            } else {
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
-              _nameCtrl.clear();
-              _nicknameCtrl.clear();
-              _passwordCtrl.clear();
-              _emailCtrl.clear();
-            }
-          },
-        ),
-        new FlatButton(
-          child: Text('Login'),
-          onPressed: () {
-            _nameCtrl.clear();
-            _nicknameCtrl.clear();
-            _passwordCtrl.clear();
-            _emailCtrl.clear();
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                '/Login', (Route<dynamic> route) => false);
-          },
-        )
+        _btnLogin,
+        _btnClose,
       ]);
 
   return showDialog(

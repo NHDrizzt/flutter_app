@@ -1,14 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/Model/Anime.dart';
+import 'package:flutter_app/Model/User.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //Instancia do Firebase
-final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+final FirebaseAuth _firebaseAuthInstance = FirebaseAuth.instance;
+final Firestore _fireStoreInstance = Firestore.instance;
 
 class FirebaseUs {
   Future<String> login(String email, String password) async {
     AuthResult result;
     try {
-      result = await _firebaseAuth.signInWithEmailAndPassword(
+      result = await _firebaseAuthInstance.signInWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser user = result.user;
       return user.uid;
@@ -18,32 +22,64 @@ class FirebaseUs {
     }
   }
 
-  Future<String> create(String email, String password) async {
+  Future<bool> create(User newUser) async {
 //O método "FetchSignInMethodsForEmail" vai retornar uma lista de métodos que o usuario pode usar para acessar
 //Vai retornar 'null' se o usuário não for encontrado
-    List<String> userverify =
-        await _firebaseAuth.fetchSignInMethodsForEmail(email: email);
+    List<String> userverify = await _firebaseAuthInstance
+        .fetchSignInMethodsForEmail(email: newUser.email);
 
     //Se a lista auxiliar estiver nula, o usuário não está cadastrado ainda
     if (userverify.isEmpty) {
-      //Cadastro FIREBASE
-
       //O método 'CreateUserWithEmailAndPassWord' faz tudo pra mim, só preciso passar duas string pra ele, o email e a senha
-      AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+      AuthResult result =
+          await _firebaseAuthInstance.createUserWithEmailAndPassword(
+        email: newUser.email,
+        password: newUser.password,
       );
       final FirebaseUser user = result.user;
-      var x = user.uid;
-      return x;
+      //Função responsável por adicionar uma chave no Database, com info do user
+      _regUserInStorage(newUser);
+      return true;
     } else {
       //Usuario já está cadastrado!
-      return null;
+      return false;
     }
   }
 
   Future<String> currentUser() async {
-    FirebaseUser user = await _firebaseAuth.currentUser();
-    return user.uid;
+    FirebaseUser user = await _firebaseAuthInstance.currentUser();
+    return user.email;
+  }
+
+  Future<String> _regUserInStorage(User newUser) async {
+    await _fireStoreInstance
+        .collection('User')
+        .document(newUser.email)
+        .setData({
+      "Name": newUser.name,
+      "NickName": newUser.nickname,
+      "Email": newUser.email,
+    });
+  }
+
+  Future<bool> addAnimeToFavorites(DocumentSnapshot doc) {
+    Anime newFavAnime = new Anime(doc["Nome"], doc['Estudio'], doc["Duracao"],
+        doc["Categoria"], doc["Descricao"]);
+
+    String email = currentUser().toString();
+    _fireStoreInstance
+        .collection('User')
+        .document(email)
+        .collection('AnimesFavoritos')
+        .document(newFavAnime.NomeAnime)
+        .setData({
+      "Nome": newFavAnime.NomeAnime,
+      "Estudio": newFavAnime.Estudio,
+      "Duracao": newFavAnime.Duracao,
+      "Categoria": newFavAnime.Categoria,
+      "Descricao": newFavAnime.Descricao,
+    });
+
+    //TODO (Gibs) TESTAR ASSIM QUE CONSEGUIR ACESSA A TELA DE PERFIL
   }
 }

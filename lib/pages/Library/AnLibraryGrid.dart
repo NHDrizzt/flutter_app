@@ -3,29 +3,39 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 
 //Esse método não está separado na DAO
-Widget gridViewFromFirebase(BuildContext context) {
-  final content = StreamBuilder(
-      //Coleção
-      stream: Firestore.instance.collection('Animes').snapshots(),
-
-      /// <--------- FIREBASE
-      //build
-      builder: (BuildContext ctx, AsyncSnapshot snapshot) {
-        //Se não tiver nenhum, carregando.
-        if (!snapshot.hasData)
-          return Container(
-            width: 100,
-            height: 50,
-            alignment: Alignment.center,
-            padding: EdgeInsets.all(2.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(
-                  Radius.circular(5.0) //         <--- border radius here
-                  ),
+Widget gridViewFromFirebase(BuildContext context, width, heigth) {
+  final _onLoading = Container(
+      width: width,
+      height: heigth,
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(
+            Radius.circular(5.0) //         <--- border radius here
             ),
-            child: Text("Carregando .... "),
-          );
+      ),
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("Carregando .... "),
+            CircularProgressIndicator()
+          ],
+        ),
+      ));
+
+  final content = StreamBuilder(
+      //Estou dizendo para o Firebase, "Abra um fluxo disso aqui" no caso, da coleção 'Animes'
+      stream: Firestore.instance.collection('Animes').snapshots(),
+      //Sempre que você usa um StreamBuilder, ele usa essa stream para "ver" o que está acontencendo nesse 'fluxo'
+      //Se adicionar alguma coisa no Firebase, ele atualiza automaticamente por causa da stream
+
+      //Construtor
+      builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+        //Se não tiver nenhum carregando, adicione o "Carregando"
+        if (!snapshot.hasData) return _onLoading;
         //Retorna a gridViewTOP
         return GridView.builder(
             itemCount: snapshot.data.documents.length,
@@ -48,14 +58,14 @@ Widget gridViewFromFirebase(BuildContext context) {
 
 Hero _cardUtilFirebase(DocumentSnapshot doc, BuildContext context) {
   final descanime = Container(
-    padding: EdgeInsets.all(2.0),
-    decoration: BoxDecoration(
-      color: Colors.black54,
-      borderRadius: BorderRadius.all(
-          Radius.circular(5.0) //         <--- border radius here
-          ),
-    ),
-    child: Column(
+      padding: EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+        color: Colors.black54,
+        borderRadius: BorderRadius.all(
+            Radius.circular(5.0) //         <--- border radius here
+            ),
+      ),
+      child: Column(
         children: <Widget>[
           Text(
             doc['Nome'],
@@ -69,10 +79,7 @@ Hero _cardUtilFirebase(DocumentSnapshot doc, BuildContext context) {
             textAlign: TextAlign.center,
           ),
         ],
-    )
-  );
-
-
+      ));
 
   final stackFundo = Stack(
     alignment: Alignment.bottomCenter,
@@ -80,21 +87,22 @@ Hero _cardUtilFirebase(DocumentSnapshot doc, BuildContext context) {
       ClipRRect(
         borderRadius: new BorderRadius.circular(9.0),
         child: Image.network(
-          doc['Imagem'],/// <--------- FIREBASE
+          doc['Imagem'],
           fit: BoxFit.cover,
           width: 150,
-          height: 130.5,
+          height: 132,
         ),
       ),
       descanime,
     ],
   );
+
   String _imgname = doc['Imagem'];
   return Hero(
       tag: _imgname,
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, '/Details', arguments: doc); /// <--------- FIREBASE
+          Navigator.pushNamed(context, '/Details', arguments: doc);
         },
         child: Card(
             shape: RoundedRectangleBorder(
@@ -107,6 +115,4 @@ Hero _cardUtilFirebase(DocumentSnapshot doc, BuildContext context) {
               ],
             )),
       ));
-
-
 }

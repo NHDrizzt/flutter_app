@@ -3,28 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/TelaNavBar/SecondRoute.dart';
 import 'package:flutter_app/TelaUsuario/PerfilGui.dart';
 import 'dart:math';
-import 'package:flutter_app/globals.dart' as globals;
+import 'package:flutter_app/Library/globals.dart' as globals;
 
-import 'package:flutter_app/autenticacao/auth.dart';
 class Perfil extends StatefulWidget {
-  Perfil({this.auth});
-  final Auth auth;
 
   @override
   _PerfilState createState() => new _PerfilState();
 }
 
 class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
-/*
-  void _signOut() async {
-    try{
-      await widget.auth.signOut();
-    }catch(e){
-      print('Error: $e');
-    }
-  }
-
- */
 
   AnimationController animationControllerMenu;
   Animation<double> animationMenu;
@@ -41,7 +28,6 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
         animationControllerMenu.reverse().orCancel;
       }
     } on TickerCanceled {
-      // the animation go cancelled, probably because disposed
     }
   }
 
