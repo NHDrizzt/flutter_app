@@ -16,8 +16,6 @@ class _BubblesState extends State<TabBarAnimation>
   final Color color = Colors.orange;
   final double maxBubbleSize = 12.0;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -45,7 +43,6 @@ class _BubblesState extends State<TabBarAnimation>
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,9 +50,9 @@ class _BubblesState extends State<TabBarAnimation>
         color: Colors.white70,
         child: Stack(
           children: <Widget>[
-            Center(child: Column(
+            Center(
+                child: Column(
               children: <Widget>[
-
                 SizedBox(
                   height: 100.0,
                 ), // Margin

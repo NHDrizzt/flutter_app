@@ -1,8 +1,6 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/DAO/AnimeDAO.dart';
+import 'package:flutter_app/DAO/UsuarioDAO.dart';
 
 class detailsAnime extends StatefulWidget {
   @override
@@ -15,22 +13,6 @@ class _detailAn extends State<detailsAnime> {
   Color bckcolor = Colors.transparent;
   Radius toprigthBorder = Radius.circular(5.0);
   Radius botrigthBorder = Radius.circular(130.0);
-
-  //AppBar
-  final _posAppbar = AppBar(
-    actions: <Widget>[
-      IconButton(
-          icon: Icon(
-            Icons.more_vert,
-            color: Colors.orange,
-          ),
-          onPressed: () {
-            /// FAZER
-          })
-    ],
-    backgroundColor: Colors.transparent,
-    elevation: 0.0,
-  );
 
   //Transição de cores
   final _getGradient = Container(
@@ -49,31 +31,45 @@ class _detailAn extends State<detailsAnime> {
   @override
   Widget build(BuildContext context) {
     DocumentSnapshot doc = ModalRoute.of(context).settings.arguments;
+    //AppBar
+    final _posAppbar = AppBar(
+      actions: <Widget>[
+        IconButton(
+            icon: Icon(
+              Icons.more_vert,
+              color: Colors.orange,
+            ),
+            onPressed: () {
+              FirebaseUs().addAnimeToFavorites(doc);
+            })
+      ],
+      backgroundColor: Colors.transparent,
+      elevation: 0.0,
+    );
 
     final _icButtonCard = Container(
-      alignment: Alignment.topRight,
-      child:FloatingActionButton(
-         child: icon,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          mini: true,
-          foregroundColor: Colors.black,
-          onPressed: (){
-            setState(() {
-              if (widthContainer == 15) {
-                botrigthBorder =  Radius.circular(140.0);
-                toprigthBorder =  Radius.circular(10.0);
-                widthContainer = 300;
-                icon = icon = Icon(Icons.arrow_back_ios);
-              } else {
-                botrigthBorder =  Radius.circular(200.0);
-                toprigthBorder =  Radius.circular(200.0);
-                icon = null;
-                widthContainer = 15;
-              }
-            });
-          })
-    );
+        alignment: Alignment.topRight,
+        child: FloatingActionButton(
+            child: icon,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            mini: true,
+            foregroundColor: Colors.black,
+            onPressed: () {
+              setState(() {
+                if (widthContainer == 15) {
+                  botrigthBorder = Radius.circular(140.0);
+                  toprigthBorder = Radius.circular(10.0);
+                  widthContainer = 300;
+                  icon = icon = Icon(Icons.arrow_back_ios);
+                } else {
+                  botrigthBorder = Radius.circular(200.0);
+                  toprigthBorder = Radius.circular(200.0);
+                  icon = null;
+                  widthContainer = 15;
+                }
+              });
+            }));
 
     //Card no meio da Tela
     final _centerCard = Positioned(
@@ -82,13 +78,13 @@ class _detailAn extends State<detailsAnime> {
           onTap: () {
             setState(() {
               if (widthContainer == 15) {
-                botrigthBorder =  Radius.circular(140.0);
-                toprigthBorder =  Radius.circular(10.0);
+                botrigthBorder = Radius.circular(140.0);
+                toprigthBorder = Radius.circular(10.0);
                 widthContainer = 300;
                 icon = icon = Icon(Icons.arrow_back_ios);
               } else {
-                botrigthBorder =  Radius.circular(200.0);
-                toprigthBorder =  Radius.circular(200.0);
+                botrigthBorder = Radius.circular(200.0);
+                toprigthBorder = Radius.circular(200.0);
                 widthContainer = 15;
                 icon = null;
               }
@@ -103,14 +99,12 @@ class _detailAn extends State<detailsAnime> {
               children: <Widget>[
                 _icButtonCard,
                 _centerCardContainer(doc),
-                ],
+              ],
             ),
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
-                  bottomRight: botrigthBorder,
-                  topRight: toprigthBorder
-                )),
+                    bottomRight: botrigthBorder, topRight: toprigthBorder)),
           ),
         ));
 
@@ -173,7 +167,7 @@ Widget _img(DocumentSnapshot doc, BuildContext context) {
 Widget _centerCardContainer(DocumentSnapshot doc) {
   final _centerCardContent = ListView(
     scrollDirection: Axis.horizontal,
-    padding:EdgeInsets.all(15.0) ,
+    padding: EdgeInsets.all(15.0),
     children: <Widget>[
       Column(
         crossAxisAlignment: CrossAxisAlignment.center,
