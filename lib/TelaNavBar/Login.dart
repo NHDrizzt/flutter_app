@@ -175,7 +175,7 @@ class _LoginPageState extends State<LoginPage>
       },
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
-      initialValue: 'nezuko@gmail.com',
+      initialValue: 'gibzinh@hhu.com',
       decoration: InputDecoration(
         hintText: 'E-mail',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),

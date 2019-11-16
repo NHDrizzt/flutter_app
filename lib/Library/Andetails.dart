@@ -1,12 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/DAO/UsuarioDAO.dart';
+import 'package:flutter_app/Library/UtilDialog.dart';
 import 'package:flutter_app/Library/globals.dart' as globals;
 import 'package:flutter_app/pages/Library/fancy.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class detailsAnime extends StatefulWidget {
   @override
   _detailAn createState() => _detailAn();
 }
+
+double widthScreen;
+double heightScreen;
 
 class _detailAn extends State<detailsAnime> {
   double widthContainer = 300.0;
@@ -47,7 +53,8 @@ class _detailAn extends State<detailsAnime> {
   @override
   Widget build(BuildContext context) {
     DocumentSnapshot doc = ModalRoute.of(context).settings.arguments;
-
+    widthScreen = MediaQuery.of(context).size.width;
+    heightScreen = MediaQuery.of(context).size.height;
     final _icButtonCard = Container(
         alignment: Alignment.topRight,
         child: FloatingActionButton(
@@ -109,9 +116,47 @@ class _detailAn extends State<detailsAnime> {
           ),
         ));
 
+//Responsável pelo botão animado á direita da tela
+    final _speedDial = SpeedDial(
+      backgroundColor: Colors.black,
+      animatedIcon: AnimatedIcons.add_event,
+      children: [
+        SpeedDialChild(
+            child: Icon(Icons.alarm_add),
+            label: 'Estou assistindo!',
+            backgroundColor: Colors.orangeAccent[400],
+            onTap: () {
+              //TODO Pensar uma regra de negócio para ele poder colocar a temporada e o episódio
+            }),
+        SpeedDialChild(
+            child: Icon(Icons.done),
+            label: 'Já Assisti!',
+            backgroundColor: Colors.orangeAccent[400],
+            onTap: () {
+              FirebaseUs().addAnimeToAssistidos(doc);
+              Dialogs().dialogSucess(context);
+              Future.delayed(Duration(seconds: 3), () {
+                Navigator.of(context).pop();
+              });
+            }),
+        SpeedDialChild(
+            child: Icon(Icons.star),
+            label: 'Favoritar',
+            backgroundColor: Colors.orangeAccent[400],
+            onTap: () {
+              print('Adicionado aos favoritos');
+              FirebaseUs().addAnimeToFavorites(doc);
+              Dialogs().dialogSucess(context);
+              Future.delayed(Duration(seconds: 3), () {
+                Navigator.of(context).pop();
+              });
+            }),
+      ],
+    );
+
     if (globals.isLoggedIn == true) {
       return Scaffold(
-        //    body: _body(doc, context),
+        floatingActionButton: _speedDial,
         body: Stack(
           children: <Widget>[
             _img(doc, context),
@@ -121,7 +166,7 @@ class _detailAn extends State<detailsAnime> {
             _centerCard
           ],
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.orangeAccent[200],
       );
     } else if (globals.isLoggedIn == false) {
       return Scaffold(
@@ -130,14 +175,96 @@ class _detailAn extends State<detailsAnime> {
           children: <Widget>[
             _img(doc, context),
             // _getGradient,
+
             _descAnime2(doc),
             _posAppbar,
-            _centerCard
+            _centerCard,
           ],
         ),
         backgroundColor: Colors.orange,
       );
     }
+  }
+
+  Row _fancyButtons() {
+    final fancybutton = Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        child: FancyButton(
+          onPressed: () {
+            print('GG');
+          },
+          child: Text(
+            "Adicionar!",
+            style: TextStyle(color: Colors.white),
+          ),
+          size: 18,
+          color: Colors.black,
+        ),
+      ),
+    );
+
+    final fancybutton2 = Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        child: FancyButton(
+          child: Text(
+            "Já Assisti!",
+            style: TextStyle(color: Colors.white),
+          ),
+          size: 18,
+          color: Colors.black,
+        ),
+      ),
+    );
+
+    final fancybutton3 = Align(
+      alignment: Alignment.bottomRight,
+      child: Container(
+        child: FancyButton(
+          child: Text(
+            "Estou Assistindo!",
+            style: TextStyle(color: Colors.white),
+          ),
+          size: 18,
+          color: Colors.black,
+        ),
+      ),
+    );
+    return Row(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: fancybutton,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: fancybutton2,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: fancybutton3,
+        )
+      ],
+    );
+  }
+
+  //Descrição do Anime
+  Widget _descAnime(DocumentSnapshot doc) {
+    return Positioned(
+      top: 230.0,
+      child: new Container(
+          margin: new EdgeInsets.symmetric(vertical: 40.0),
+          padding: EdgeInsets.all(12.0),
+          width: widthScreen,
+          height: 500,
+          child: ListView(
+            scrollDirection: Axis.vertical,
+            children: <Widget>[
+              _txtContent(doc['Descricao'], 17, FontWeight.w400),
+            ],
+          )),
+    );
   }
 }
 
@@ -169,84 +296,6 @@ Widget _descAnime2(DocumentSnapshot doc) {
                   ),
                 ),
               ],
-            ),
-          ],
-        )),
-  );
-}
-
-//Descrição do Anime
-Widget _descAnime(DocumentSnapshot doc) {
-  final fancybutton = Align(
-    alignment: Alignment.bottomLeft,
-    child: Container(
-      child: FancyButton(
-        child: Text(
-          "Adicionar!",
-          style: TextStyle(color: Colors.white),
-        ),
-        size: 18,
-        color: Colors.black,
-      ),
-    ),
-  );
-  final fancybutton2 = Align(
-    alignment: Alignment.bottomCenter,
-    child: Container(
-      child: FancyButton(
-        child: Text(
-          "Já Assisti!",
-          style: TextStyle(color: Colors.white),
-        ),
-        size: 18,
-        color: Colors.black,
-      ),
-    ),
-  );
-
-  final fancybutton3 = Align(
-    alignment: Alignment.bottomRight,
-    child: Container(
-      child: FancyButton(
-        child: Text(
-          "Estou Assistindo!",
-          style: TextStyle(color: Colors.white),
-        ),
-        size: 18,
-        color: Colors.black,
-      ),
-    ),
-  );
-
-  return Positioned(
-    top: 230.0,
-    child: new Container(
-        margin: new EdgeInsets.symmetric(vertical: 70.0),
-        padding: EdgeInsets.all(10.0),
-        width: 400,
-        height: 500,
-        child: ListView(
-          scrollDirection: Axis.vertical,
-          children: <Widget>[
-            _txtContent(doc['Descricao'], 17, FontWeight.w400),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: fancybutton,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: fancybutton2,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: fancybutton3,
-                  )
-                ],
-              ),
             ),
           ],
         )),

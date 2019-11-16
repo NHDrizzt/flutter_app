@@ -62,12 +62,12 @@ class FirebaseUs {
     });
   }
 
-  Future<bool> addAnimeToFavorites(DocumentSnapshot doc) {
+  Future<bool> addAnimeToFavorites(DocumentSnapshot doc) async {
     Anime newFavAnime = new Anime(doc["Nome"], doc['Estudio'], doc["Duracao"],
         doc["Categoria"], doc["Descricao"]);
 
-    String email = currentUser().toString();
-    _fireStoreInstance
+    String email = await currentUser();
+    await _fireStoreInstance
         .collection('User')
         .document(email)
         .collection('AnimesFavoritos')
@@ -78,8 +78,52 @@ class FirebaseUs {
       "Duracao": newFavAnime.Duracao,
       "Categoria": newFavAnime.Categoria,
       "Descricao": newFavAnime.Descricao,
+    }).catchError((e) {
+      return false;
     });
+    return true;
+  }
 
-    //TODO (Gibs) TESTAR ASSIM QUE CONSEGUIR ACESSA A TELA DE PERFIL
+  Future<bool> addAnimeToAssistidos(DocumentSnapshot doc) async {
+    Anime newFavAnime = new Anime(doc["Nome"], doc['Estudio'], doc["Duracao"],
+        doc["Categoria"], doc["Descricao"]);
+
+    String email = await currentUser();
+    _fireStoreInstance
+        .collection('User')
+        .document(email)
+        .collection('AnimesAssistidos')
+        .document(newFavAnime.NomeAnime)
+        .setData({
+      "Nome": newFavAnime.NomeAnime,
+      "Estudio": newFavAnime.Estudio,
+      "Duracao": newFavAnime.Duracao,
+      "Categoria": newFavAnime.Categoria,
+      "Descricao": newFavAnime.Descricao,
+    }).then((value) {
+      return true;
+    }).catchError((e) {
+      return false;
+    });
+  }
+
+//TODO Creio que esse "Assistindo" ainda não está ok. FAZER.
+  Future<bool> addAnimeToAssistindo(DocumentSnapshot doc) async {
+    Anime newFavAnime = new Anime(doc["Nome"], doc['Estudio'], doc["Duracao"],
+        doc["Categoria"], doc["Descricao"]);
+
+    String email = await currentUser();
+    _fireStoreInstance
+        .collection('User')
+        .document(email)
+        .collection('AnimesSendoAssistido')
+        .document(newFavAnime.NomeAnime)
+        .setData({
+      "Nome": newFavAnime.NomeAnime,
+      "Estudio": newFavAnime.Estudio,
+      "Duracao": newFavAnime.Duracao,
+      "Categoria": newFavAnime.Categoria,
+      "Descricao": newFavAnime.Descricao,
+    });
   }
 }
