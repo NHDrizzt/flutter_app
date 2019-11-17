@@ -29,9 +29,7 @@ class _detailAn extends State<detailsAnime> {
             Icons.more_vert,
             color: Colors.orange,
           ),
-          onPressed: () {
-            /// FAZER
-          })
+          onPressed: () {})
     ],
     backgroundColor: Colors.transparent,
     elevation: 0.0,
@@ -121,31 +119,53 @@ class _detailAn extends State<detailsAnime> {
       backgroundColor: Colors.black,
       animatedIcon: AnimatedIcons.add_event,
       children: [
+        //Botão de "Estou assistindo" com o ícone de Alarme +
         SpeedDialChild(
             child: Icon(Icons.alarm_add),
             label: 'Estou assistindo!',
             backgroundColor: Colors.orangeAccent[400],
             onTap: () {
-              //TODO Pensar uma regra de negócio para ele poder colocar a temporada e o episódio
+              Dialogs().dialogAssistindo(context, doc);
             }),
+
+        //Botão "Quero assistir" com ícone WatchLater
+        SpeedDialChild(
+            child: Icon(Icons.watch_later),
+            label: 'Quero Assistir',
+            backgroundColor: Colors.orangeAccent[400],
+            onTap: () {
+              //Adiciona aos "Quero Assistir" pela DAO
+              FirebaseLoginSet().addToWatchLater(doc);
+              //Exibe o Dialog de sucess
+              Dialogs().dialogSucess(context);
+              //Dá um pop no dialog pós 3 segundos
+              Future.delayed(Duration(seconds: 3), () {
+                Navigator.of(context).pop();
+              });
+            }),
+
+        //Botão "Já assisti, com ícone de Done"
         SpeedDialChild(
             child: Icon(Icons.done),
             label: 'Já Assisti!',
             backgroundColor: Colors.orangeAccent[400],
             onTap: () {
-              FirebaseUs().addAnimeToAssistidos(doc);
+              //Adiciona aos Assistidos pela DAO
+              FirebaseLoginSet().addToAssistidos(doc);
               Dialogs().dialogSucess(context);
               Future.delayed(Duration(seconds: 3), () {
                 Navigator.of(context).pop();
               });
             }),
+
+        //Botão para favoritar com ícone estrela
         SpeedDialChild(
             child: Icon(Icons.star),
             label: 'Favoritar',
             backgroundColor: Colors.orangeAccent[400],
             onTap: () {
-              print('Adicionado aos favoritos');
-              FirebaseUs().addAnimeToFavorites(doc);
+              //Adiciona aos favoritos pela DAO
+              FirebaseLoginSet().addToFavorites(doc);
               Dialogs().dialogSucess(context);
               Future.delayed(Duration(seconds: 3), () {
                 Navigator.of(context).pop();
@@ -184,69 +204,6 @@ class _detailAn extends State<detailsAnime> {
         backgroundColor: Colors.orange,
       );
     }
-  }
-
-  Row _fancyButtons() {
-    final fancybutton = Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        child: FancyButton(
-          onPressed: () {
-            print('GG');
-          },
-          child: Text(
-            "Adicionar!",
-            style: TextStyle(color: Colors.white),
-          ),
-          size: 18,
-          color: Colors.black,
-        ),
-      ),
-    );
-
-    final fancybutton2 = Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        child: FancyButton(
-          child: Text(
-            "Já Assisti!",
-            style: TextStyle(color: Colors.white),
-          ),
-          size: 18,
-          color: Colors.black,
-        ),
-      ),
-    );
-
-    final fancybutton3 = Align(
-      alignment: Alignment.bottomRight,
-      child: Container(
-        child: FancyButton(
-          child: Text(
-            "Estou Assistindo!",
-            style: TextStyle(color: Colors.white),
-          ),
-          size: 18,
-          color: Colors.black,
-        ),
-      ),
-    );
-    return Row(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: fancybutton,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: fancybutton2,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: fancybutton3,
-        )
-      ],
-    );
   }
 
   //Descrição do Anime

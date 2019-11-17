@@ -68,7 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
         //Enviando para cadastro
 
         //Essa chamada de função é a parte responsável por cadastrar e validar o usuário
-        if (await FirebaseUs().create(newUser)) {
+        if (await FirebaseLoginSet().create(newUser)) {
           Navigator.of(context).pop;
           _showDialog(context, "Email cadastrado! ",
               " Cadastrado com sucesso! ^u^", true);

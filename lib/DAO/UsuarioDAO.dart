@@ -8,7 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 final FirebaseAuth _firebaseAuthInstance = FirebaseAuth.instance;
 final Firestore _fireStoreInstance = Firestore.instance;
 
-class FirebaseUs {
+class FirebaseLoginSet {
   Future<String> login(String email, String password) async {
     AuthResult result;
     try {
@@ -62,7 +62,7 @@ class FirebaseUs {
     });
   }
 
-  Future<bool> addAnimeToFavorites(DocumentSnapshot doc) async {
+  Future<bool> addToFavorites(DocumentSnapshot doc) async {
     Anime newFavAnime = new Anime(doc["Nome"], doc['Estudio'], doc["Duracao"],
         doc["Categoria"], doc["Descricao"]);
 
@@ -84,7 +84,7 @@ class FirebaseUs {
     return true;
   }
 
-  Future<bool> addAnimeToAssistidos(DocumentSnapshot doc) async {
+  Future<bool> addToAssistidos(DocumentSnapshot doc) async {
     Anime newFavAnime = new Anime(doc["Nome"], doc['Estudio'], doc["Duracao"],
         doc["Categoria"], doc["Descricao"]);
 
@@ -92,7 +92,7 @@ class FirebaseUs {
     _fireStoreInstance
         .collection('User')
         .document(email)
-        .collection('AnimesAssistidos')
+        .collection('Assistidos')
         .document(newFavAnime.NomeAnime)
         .setData({
       "Nome": newFavAnime.NomeAnime,
@@ -107,8 +107,8 @@ class FirebaseUs {
     });
   }
 
-//TODO Creio que esse "Assistindo" ainda não está ok. FAZER.
-  Future<bool> addAnimeToAssistindo(DocumentSnapshot doc) async {
+  Future<bool> addToAssistindo(
+      DocumentSnapshot doc, String temp, String ep) async {
     Anime newFavAnime = new Anime(doc["Nome"], doc['Estudio'], doc["Duracao"],
         doc["Categoria"], doc["Descricao"]);
 
@@ -116,7 +116,25 @@ class FirebaseUs {
     _fireStoreInstance
         .collection('User')
         .document(email)
-        .collection('AnimesSendoAssistido')
+        .collection('SendoAssistido')
+        .document(newFavAnime.NomeAnime)
+        .setData({
+      "Nome": newFavAnime.NomeAnime,
+      "Categoria": newFavAnime.Categoria,
+      "UltimoEp": ep,
+      "UltimaTemp": temp,
+    });
+  }
+
+  Future<bool> addToWatchLater(DocumentSnapshot doc) async {
+    Anime newFavAnime = new Anime(doc["Nome"], doc['Estudio'], doc["Duracao"],
+        doc["Categoria"], doc["Descricao"]);
+
+    String email = await currentUser();
+    _fireStoreInstance
+        .collection('User')
+        .document(email)
+        .collection('AssistirMaisTarde')
         .document(newFavAnime.NomeAnime)
         .setData({
       "Nome": newFavAnime.NomeAnime,
@@ -124,6 +142,12 @@ class FirebaseUs {
       "Duracao": newFavAnime.Duracao,
       "Categoria": newFavAnime.Categoria,
       "Descricao": newFavAnime.Descricao,
+    }).then((value) {
+      return true;
+    }).catchError((e) {
+      return false;
     });
   }
 }
+
+class FirebaseGET {}
