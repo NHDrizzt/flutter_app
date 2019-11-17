@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Model/colors.dart';
-import 'package:flutter_app/pages/Register.dart';
+import 'package:flutter_app/TelaNavBar/Cadastro/Register.dart';
 import 'package:line_icons/line_icons.dart';
 
 class TrocaSenha extends StatefulWidget {

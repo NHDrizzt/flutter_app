@@ -10,10 +10,9 @@ class SecondRoute extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black87,
       appBar: AppBar(
-          leading: Icon(Icons.list),
           backgroundColor: Colors.orangeAccent,
           title: Center(
-            child: Text("Otaku Library"),
+            child: Text("Otaku Library - Biblioteca de Animes"),
           )),
       body: gridViewFromFirebase(context, _widthScreen, _heightScreen),
     );

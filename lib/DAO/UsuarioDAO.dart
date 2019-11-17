@@ -8,7 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 final FirebaseAuth _firebaseAuthInstance = FirebaseAuth.instance;
 final Firestore _fireStoreInstance = Firestore.instance;
 
-class FirebaseUs {
+class FirebaseLoginSet {
   Future<String> login(String email, String password) async {
     AuthResult result;
     try {
@@ -62,12 +62,12 @@ class FirebaseUs {
     });
   }
 
-  Future<bool> addAnimeToFavorites(DocumentSnapshot doc) {
+  Future<bool> addToFavorites(DocumentSnapshot doc) async {
     Anime newFavAnime = new Anime(doc["Nome"], doc['Estudio'], doc["Duracao"],
         doc["Categoria"], doc["Descricao"]);
 
-    String email = currentUser().toString();
-    _fireStoreInstance
+    String email = await currentUser();
+    await _fireStoreInstance
         .collection('User')
         .document(email)
         .collection('AnimesFavoritos')
@@ -78,8 +78,76 @@ class FirebaseUs {
       "Duracao": newFavAnime.Duracao,
       "Categoria": newFavAnime.Categoria,
       "Descricao": newFavAnime.Descricao,
+    }).catchError((e) {
+      return false;
     });
+    return true;
+  }
 
-    //TODO (Gibs) TESTAR ASSIM QUE CONSEGUIR ACESSA A TELA DE PERFIL
+  Future<bool> addToAssistidos(DocumentSnapshot doc) async {
+    Anime newFavAnime = new Anime(doc["Nome"], doc['Estudio'], doc["Duracao"],
+        doc["Categoria"], doc["Descricao"]);
+
+    String email = await currentUser();
+    _fireStoreInstance
+        .collection('User')
+        .document(email)
+        .collection('Assistidos')
+        .document(newFavAnime.NomeAnime)
+        .setData({
+      "Nome": newFavAnime.NomeAnime,
+      "Estudio": newFavAnime.Estudio,
+      "Duracao": newFavAnime.Duracao,
+      "Categoria": newFavAnime.Categoria,
+      "Descricao": newFavAnime.Descricao,
+    }).then((value) {
+      return true;
+    }).catchError((e) {
+      return false;
+    });
+  }
+
+  Future<bool> addToAssistindo(
+      DocumentSnapshot doc, String temp, String ep) async {
+    Anime newFavAnime = new Anime(doc["Nome"], doc['Estudio'], doc["Duracao"],
+        doc["Categoria"], doc["Descricao"]);
+
+    String email = await currentUser();
+    _fireStoreInstance
+        .collection('User')
+        .document(email)
+        .collection('SendoAssistido')
+        .document(newFavAnime.NomeAnime)
+        .setData({
+      "Nome": newFavAnime.NomeAnime,
+      "Categoria": newFavAnime.Categoria,
+      "UltimoEp": ep,
+      "UltimaTemp": temp,
+    });
+  }
+
+  Future<bool> addToWatchLater(DocumentSnapshot doc) async {
+    Anime newFavAnime = new Anime(doc["Nome"], doc['Estudio'], doc["Duracao"],
+        doc["Categoria"], doc["Descricao"]);
+
+    String email = await currentUser();
+    _fireStoreInstance
+        .collection('User')
+        .document(email)
+        .collection('AssistirMaisTarde')
+        .document(newFavAnime.NomeAnime)
+        .setData({
+      "Nome": newFavAnime.NomeAnime,
+      "Estudio": newFavAnime.Estudio,
+      "Duracao": newFavAnime.Duracao,
+      "Categoria": newFavAnime.Categoria,
+      "Descricao": newFavAnime.Descricao,
+    }).then((value) {
+      return true;
+    }).catchError((e) {
+      return false;
+    });
   }
 }
+
+class FirebaseGET {}

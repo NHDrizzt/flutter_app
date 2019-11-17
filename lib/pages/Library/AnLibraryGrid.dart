@@ -58,25 +58,28 @@ Widget gridViewFromFirebase(BuildContext context, width, heigth) {
 
 Hero _cardUtilFirebase(DocumentSnapshot doc, BuildContext context) {
   final descanime = Container(
-    padding: EdgeInsets.all(2.0),
-    decoration: BoxDecoration(
-      color: Colors.black54,
-      borderRadius: BorderRadius.all(
-          Radius.circular(5.0) //         <--- border radius here
-          ),
-    ),
-    child: Text(
-      doc['Nome'],
-
-      /// <--------- FIREBASE
-      style: TextStyle(
-        fontSize: 10,
-        color: Colors.white,
-        fontWeight: FontWeight.w600,
+      padding: EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+        color: Colors.black54,
+        borderRadius: BorderRadius.all(
+            Radius.circular(5.0) //         <--- border radius here
+            ),
       ),
-      textAlign: TextAlign.center,
-    ),
-  );
+      child: Column(
+        children: <Widget>[
+          Text(
+            doc['Nome'],
+
+            /// <--------- FIREBASE
+            style: TextStyle(
+              fontSize: 10,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ));
 
   final stackFundo = Stack(
     alignment: Alignment.bottomCenter,

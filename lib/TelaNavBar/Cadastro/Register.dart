@@ -3,6 +3,7 @@ import 'package:flutter_app/DAO/UsuarioDAO.dart';
 import 'package:flutter_app/Model/colors.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:flutter_app/Model/User.dart';
+import 'package:flutter_app/Library/globals.dart' as globals;
 
 TextEditingController _nameCtrl = new TextEditingController();
 TextEditingController _passwordCtrl = new TextEditingController();
@@ -67,7 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
         //Enviando para cadastro
 
         //Essa chamada de função é a parte responsável por cadastrar e validar o usuário
-        if (await FirebaseUs().create(newUser)) {
+        if (await FirebaseLoginSet().create(newUser)) {
           Navigator.of(context).pop;
           _showDialog(context, "Email cadastrado! ",
               " Cadastrado com sucesso! ^u^", true);
@@ -265,7 +266,9 @@ _showDialog(
         _nicknameCtrl.clear();
         _passwordCtrl.clear();
         _emailCtrl.clear();
-        Navigator.popAndPushNamed(context, '/Library');
+        globals.isLoggedIn = true;
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/Guilhotina', (Route<dynamic> route) => false);
       } else {
         Navigator.of(context).pop();
         Navigator.of(context).pop();

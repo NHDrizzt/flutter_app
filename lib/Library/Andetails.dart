@@ -1,11 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/DAO/UsuarioDAO.dart';
+import 'package:flutter_app/Library/UtilDialog.dart';
+import 'package:flutter_app/Library/globals.dart' as globals;
+import 'package:flutter_app/pages/Library/fancy.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class detailsAnime extends StatefulWidget {
   @override
   _detailAn createState() => _detailAn();
 }
+
+double widthScreen;
+double heightScreen;
 
 class _detailAn extends State<detailsAnime> {
   double widthContainer = 300.0;
@@ -14,7 +21,20 @@ class _detailAn extends State<detailsAnime> {
   Radius toprigthBorder = Radius.circular(5.0);
   Radius botrigthBorder = Radius.circular(130.0);
 
-  //Transição de cores
+  //AppBar
+  final _posAppbar = AppBar(
+    actions: <Widget>[
+      IconButton(
+          icon: Icon(
+            Icons.more_vert,
+            color: Colors.orange,
+          ),
+          onPressed: () {})
+    ],
+    backgroundColor: Colors.transparent,
+    elevation: 0.0,
+  );
+
   final _getGradient = Container(
     margin: new EdgeInsets.only(top: 170.0),
     height: 110.0,
@@ -31,22 +51,8 @@ class _detailAn extends State<detailsAnime> {
   @override
   Widget build(BuildContext context) {
     DocumentSnapshot doc = ModalRoute.of(context).settings.arguments;
-    //AppBar
-    final _posAppbar = AppBar(
-      actions: <Widget>[
-        IconButton(
-            icon: Icon(
-              Icons.more_vert,
-              color: Colors.orange,
-            ),
-            onPressed: () {
-              FirebaseUs().addAnimeToFavorites(doc);
-            })
-      ],
-      backgroundColor: Colors.transparent,
-      elevation: 0.0,
-    );
-
+    widthScreen = MediaQuery.of(context).size.width;
+    heightScreen = MediaQuery.of(context).size.height;
     final _icButtonCard = Container(
         alignment: Alignment.topRight,
         child: FloatingActionButton(
@@ -108,35 +114,146 @@ class _detailAn extends State<detailsAnime> {
           ),
         ));
 
-    return Scaffold(
-      //    body: _body(doc, context),
-      body: Stack(
-        children: <Widget>[
-          _img(doc, context),
-          // _getGradient,
-          _descAnime(doc),
-          _posAppbar,
-          _centerCard
-        ],
-      ),
-      backgroundColor: Colors.orange,
+//Responsável pelo botão animado á direita da tela
+    final _speedDial = SpeedDial(
+      backgroundColor: Colors.black,
+      animatedIcon: AnimatedIcons.add_event,
+      children: [
+        //Botão de "Estou assistindo" com o ícone de Alarme +
+        SpeedDialChild(
+            child: Icon(Icons.alarm_add),
+            label: 'Estou assistindo!',
+            backgroundColor: Colors.orangeAccent[400],
+            onTap: () {
+              Dialogs().dialogAssistindo(context, doc);
+            }),
+
+        //Botão "Quero assistir" com ícone WatchLater
+        SpeedDialChild(
+            child: Icon(Icons.watch_later),
+            label: 'Quero Assistir',
+            backgroundColor: Colors.orangeAccent[400],
+            onTap: () {
+              //Adiciona aos "Quero Assistir" pela DAO
+              FirebaseLoginSet().addToWatchLater(doc);
+              //Exibe o Dialog de sucess
+              Dialogs().dialogSucess(context);
+              //Dá um pop no dialog pós 3 segundos
+              Future.delayed(Duration(seconds: 3), () {
+                Navigator.of(context).pop();
+              });
+            }),
+
+        //Botão "Já assisti, com ícone de Done"
+        SpeedDialChild(
+            child: Icon(Icons.done),
+            label: 'Já Assisti!',
+            backgroundColor: Colors.orangeAccent[400],
+            onTap: () {
+              //Adiciona aos Assistidos pela DAO
+              FirebaseLoginSet().addToAssistidos(doc);
+              Dialogs().dialogSucess(context);
+              Future.delayed(Duration(seconds: 3), () {
+                Navigator.of(context).pop();
+              });
+            }),
+
+        //Botão para favoritar com ícone estrela
+        SpeedDialChild(
+            child: Icon(Icons.star),
+            label: 'Favoritar',
+            backgroundColor: Colors.orangeAccent[400],
+            onTap: () {
+              //Adiciona aos favoritos pela DAO
+              FirebaseLoginSet().addToFavorites(doc);
+              Dialogs().dialogSucess(context);
+              Future.delayed(Duration(seconds: 3), () {
+                Navigator.of(context).pop();
+              });
+            }),
+      ],
+    );
+
+    if (globals.isLoggedIn == true) {
+      return Scaffold(
+        floatingActionButton: _speedDial,
+        body: Stack(
+          children: <Widget>[
+            _img(doc, context),
+            // _getGradient,
+            _descAnime(doc),
+            _posAppbar,
+            _centerCard
+          ],
+        ),
+        backgroundColor: Colors.orangeAccent[200],
+      );
+    } else if (globals.isLoggedIn == false) {
+      return Scaffold(
+        //    body: _body(doc, context),
+        body: Stack(
+          children: <Widget>[
+            _img(doc, context),
+            // _getGradient,
+
+            _descAnime2(doc),
+            _posAppbar,
+            _centerCard,
+          ],
+        ),
+        backgroundColor: Colors.orange,
+      );
+    }
+  }
+
+  //Descrição do Anime
+  Widget _descAnime(DocumentSnapshot doc) {
+    return Positioned(
+      top: 230.0,
+      child: new Container(
+          margin: new EdgeInsets.symmetric(vertical: 40.0),
+          padding: EdgeInsets.all(12.0),
+          width: widthScreen,
+          height: 500,
+          child: ListView(
+            scrollDirection: Axis.vertical,
+            children: <Widget>[
+              _txtContent(doc['Descricao'], 17, FontWeight.w400),
+            ],
+          )),
     );
   }
 }
 
-//Descrição do Anime
-Widget _descAnime(DocumentSnapshot doc) {
+Widget _descAnime2(DocumentSnapshot doc) {
   return Positioned(
     top: 230.0,
     child: new Container(
-        margin: new EdgeInsets.symmetric(vertical: 40.0),
+        margin: new EdgeInsets.symmetric(vertical: 70.0),
         padding: EdgeInsets.all(10.0),
-        width: 350,
-        height: 400,
+        width: 400,
+        height: 500,
         child: ListView(
           scrollDirection: Axis.vertical,
           children: <Widget>[
             _txtContent(doc['Descricao'], 17, FontWeight.w400),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(13.0),
+                  child: Opacity(
+                    opacity: 1.0,
+                    child: new FlatButton(
+                      child: new Text(
+                          "Você precisa estar LOGADO para adicionar Animes"),
+                      color: Colors.red,
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         )),
   );

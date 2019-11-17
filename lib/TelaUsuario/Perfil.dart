@@ -1,21 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/main.dart';
-import 'package:flutter_app/pages/Login.dart';
-import 'package:flutter_app/pages/PerfilGui.dart';
+import 'package:flutter_app/TelaNavBar/SecondRoute.dart';
+import 'package:flutter_app/TelaUsuario/PerfilGui.dart';
 import 'dart:math';
+import 'package:flutter_app/Library/globals.dart' as globals;
+import 'package:flutter_app/TelaUsuario/UserOptions/Assistidos.dart';
+import 'package:flutter_app/TelaUsuario/UserOptions/Assistindo.dart';
+import 'package:flutter_app/TelaUsuario/UserOptions/WatchLater.dart';
 
 class Perfil extends StatefulWidget {
   @override
   _PerfilState createState() => new _PerfilState();
 }
 
-
 class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
   AnimationController animationControllerMenu;
   Animation<double> animationMenu;
   Animation<double> animationTitleFadeInOut;
-  _GuillotineAnimationStatus menuAnimationStatus = _GuillotineAnimationStatus.closed;
-
+  _GuillotineAnimationStatus menuAnimationStatus =
+      _GuillotineAnimationStatus.closed;
 
   void _playAnimation() {
     try {
@@ -26,13 +29,11 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
       } else {
         animationControllerMenu.reverse().orCancel;
       }
-    } on TickerCanceled {
-      // the animation go cancelled, probably because disposed
-    }
+    } on TickerCanceled {}
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     menuAnimationStatus = _GuillotineAnimationStatus.closed;
     animationControllerMenu = new AnimationController(
@@ -42,46 +43,44 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
         vsync: this)
       ..addListener(() {});
     animationMenu =
-    new Tween(begin: -pi / 2.0, end: 0.0).animate(new CurvedAnimation(
+        new Tween(begin: -pi / 2.0, end: 0.0).animate(new CurvedAnimation(
       parent: animationControllerMenu,
       curve: Curves.bounceOut,
       reverseCurve: Curves.bounceIn,
     ))
-      ..addListener(() {
-        setState(() {
-          // force refresh
-        });
-      })
-      ..addStatusListener((AnimationStatus status) {
-        if (status == AnimationStatus.completed) {
-          menuAnimationStatus = _GuillotineAnimationStatus.open;
-        } else if (status == AnimationStatus.dismissed) {
-          menuAnimationStatus = _GuillotineAnimationStatus.closed;
-        } else {
-          menuAnimationStatus = _GuillotineAnimationStatus.animating;
-        }
-      });
-    animationTitleFadeInOut = new Tween(
-        begin: 1.0,
-        end: 0.0
-    ).animate(new CurvedAnimation(
-        parent: animationControllerMenu,
-        curve: new Interval(
+          ..addListener(() {
+            setState(() {
+              // force refresh
+            });
+          })
+          ..addStatusListener((AnimationStatus status) {
+            if (status == AnimationStatus.completed) {
+              menuAnimationStatus = _GuillotineAnimationStatus.open;
+            } else if (status == AnimationStatus.dismissed) {
+              menuAnimationStatus = _GuillotineAnimationStatus.closed;
+            } else {
+              menuAnimationStatus = _GuillotineAnimationStatus.animating;
+            }
+          });
+    animationTitleFadeInOut =
+        new Tween(begin: 1.0, end: 0.0).animate(new CurvedAnimation(
+      parent: animationControllerMenu,
+      curve: new Interval(
         0.0,
         0.5,
         curve: Curves.ease,
-    ),
+      ),
     ));
   }
 
   @override
-  void dispose(){
+  void dispose() {
     animationControllerMenu.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     double screenWidth = mediaQueryData.size.width;
     double screenHeight = mediaQueryData.size.height;
@@ -102,7 +101,6 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
               _buildMenuTitle(),
               _buildMenuIcon(),
               _buildMenuContent(),
-
             ],
           ),
         ),
@@ -110,7 +108,7 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildMenuTitle(){
+  Widget _buildMenuTitle() {
     return new Positioned(
       top: 32.0,
       left: 40.0,
@@ -140,7 +138,7 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildMenuIcon(){
+  Widget _buildMenuIcon() {
     return new Positioned(
       top: 32.0,
       left: 4.0,
@@ -154,22 +152,22 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildMenuContent(){
+  Widget _buildMenuContent() {
     final List<Map> _menus = <Map>[
       {
         "icon": Icons.person,
-        "title": "Perfil",
-        "color": Colors.white,
-      },
-      {
-        "icon": Icons.view_agenda,
-        "title": "Minha Biblioteca",
+        "title": "Otaku Library",
         "color": Colors.white,
       },
       {
         "icon": Icons.star,
         "title": "Favoritos",
         "color": Colors.cyan,
+      },
+      {
+        "icon": Icons.watch_later,
+        "title": "Assistir mais tarde",
+        "color": Colors.white,
       },
       {
         "icon": Icons.timelapse,
@@ -186,7 +184,6 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
         "title": "Desconectar",
         "color": Colors.white,
       },
-
     ];
 
     return new Padding(
@@ -205,21 +202,39 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
               title: GestureDetector(
                 child: new Text(
                   menuItem["title"],
-                  style: new TextStyle(
-                      color: menuItem["color"],
-                      fontSize: 24.0),
+                  style:
+                      new TextStyle(color: menuItem["color"], fontSize: 24.0),
                 ),
-                onTap: (){
-                  if (menuItem["title"] == "Minha Biblioteca"){
+                onTap: () {
+                  if (menuItem["title"] == "Favoritos") {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Guillotine()),
                     );
-                  }
-                else if(menuItem["title"] == "Desconectar"){
+                  } else if (menuItem["title"] == "Desconectar") {
+                    FirebaseAuth.instance.signOut();
+                    globals.isLoggedIn = false;
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/Inicial', (Route<dynamic> route) => false);
+                  } else if (menuItem["title"] == "Otaku Library") {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => BottomNavBar()),
+                      MaterialPageRoute(builder: (context) => SecondRoute()),
+                    );
+                  } else if (menuItem["title"] == "Assistir mais tarde") {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => WatchLater()),
+                    );
+                  } else if (menuItem["title"] == "Assistindo") {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Assistindo()),
+                    );
+                  } else if (menuItem["title"] == "Assistidos") {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Assistidos()),
                     );
                   }
                 },
@@ -231,6 +246,5 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
     );
   }
 }
-
 
 enum _GuillotineAnimationStatus { closed, open, animating }

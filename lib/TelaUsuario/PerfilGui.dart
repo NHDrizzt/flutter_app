@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/Perfil.dart';
-import 'PageState.dart';
+import 'package:flutter_app/TelaUsuario/Perfil.dart';
+import 'UserOptions/PageState.dart';
 import 'Perfil.dart';
 
 class Guillotine extends StatefulWidget {
